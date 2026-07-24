@@ -326,8 +326,17 @@ tr:hover td{background:rgba(255,255,255,.02)}
 #boot-loading p{color:var(--text2);font-size:13px}
 #boot-error{display:none;max-width:340px;text-align:center;color:var(--red);font-size:12px;padding:0 20px}
 </style>
-<script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-app-compat.js" onerror="window.__FB_SCRIPT_FAILED=true"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-database-compat.js" onerror="window.__FB_SCRIPT_FAILED=true"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-auth-compat.js" onerror="window.__FB_SCRIPT_FAILED=true"></script>
+<script>
+  // Fallback: if the primary CDN got blocked, try a mirror before the app boots.
+  if(window.__FB_SCRIPT_FAILED || typeof firebase==='undefined'){
+    document.write('<scr'+'ipt src="https://cdn.jsdelivr.net/npm/firebase@10.13.1/firebase-app-compat.js"></scr'+'ipt>');
+    document.write('<scr'+'ipt src="https://cdn.jsdelivr.net/npm/firebase@10.13.1/firebase-database-compat.js"></scr'+'ipt>');
+    document.write('<scr'+'ipt src="https://cdn.jsdelivr.net/npm/firebase@10.13.1/firebase-auth-compat.js"></scr'+'ipt>');
+  }
+</script>
 </head>
 <body>
 
@@ -482,20 +491,26 @@ tr:hover td{background:rgba(255,255,255,.02)}
 // 3. Project settings (gear icon) → "Your apps" → Web (</>) → copy the config object.
 // 4. Paste your own values below, replacing the placeholders. Redeploy the file.
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyAUUGEuhTJx2RJI-sy1GBdVeGlWkWFZSew",
+  authDomain: "multioffice-udbo.firebaseapp.com",
+  databaseURL: "https://multioffice-udbo-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "multioffice-udbo",
+  storageBucket: "multioffice-udbo.firebasestorage.app",
+  messagingSenderId: "555082373932",
+  appId: "1:555082373932:web:a1f7431d713011fc982a89"
 };
-let fbdb=null, CLOUD_OK=false;
+let fbdb=null, CLOUD_OK=false, FB_INIT_ERROR=null;
 try{
+  if(typeof firebase==='undefined'){
+    throw new Error('Firebase SDK script did not load — check your internet connection, or gstatic.com/jsdelivr.net may be blocked on this network.');
+  }
   firebase.initializeApp(firebaseConfig);
   fbdb=firebase.database();
   CLOUD_OK = !firebaseConfig.apiKey.includes('YOUR_API_KEY');
-}catch(e){ console.error('Firebase init failed',e); }
+}catch(e){
+  console.error('Firebase init failed',e);
+  FB_INIT_ERROR = e.message;
+}
 
 // In-memory mirror of the cloud database (kept in sync via a realtime listener)
 let DB = {};
@@ -522,6 +537,27 @@ function setPath(key,value){
 
 async function loadDB(){
   if(CLOUD_OK && fbdb){
+    let authErr=null;
+    for(let attempt=1; attempt<=3; attempt++){
+      try{
+        await firebase.auth().signInAnonymously();
+        authErr=null;
+        break;
+      }catch(e){
+        authErr=e;
+        console.error('Firebase auth attempt',attempt,'failed',e);
+        if(attempt<3) await new Promise(r=>setTimeout(r, 1000*attempt));
+      }
+    }
+    if(authErr){
+      if(authErr.code==='auth/network-request-failed'){
+        throw new Error('This network/browser cannot reach Firebase\'s authentication servers (identitytoolkit.googleapis.com). If you are testing inside a preview or sandbox tool, open the real deployed link directly instead. Otherwise check your firewall/network for blocked Google API domains, then reload.');
+      }
+      if(authErr.code==='auth/admin-restricted-operation' || authErr.code==='auth/operation-not-allowed'){
+        throw new Error('Anonymous sign-in is not enabled yet. In your Firebase console, go to Build → Authentication → Sign-in method, and enable "Anonymous".');
+      }
+      throw new Error('Could not authenticate with the database ('+(authErr.code||authErr.message)+').');
+    }
     const snap = await fbdb.ref().once('value');
     DB = snap.val() || {};
     // live sync: whenever ANY device changes data, refresh this device automatically
@@ -1578,15 +1614,20 @@ function dismissBootWarning(){
     spinEl.style.display='none';
     msgEl.textContent='Could not connect to the server.';
     errEl.style.display='block';
-    errEl.textContent='Check your internet connection and the firebaseConfig values, then reload this page.';
+    errEl.textContent=e.message || 'Check your internet connection and the firebaseConfig values, then reload this page.';
     return; // stop here — do not reveal login on a failed/undefined DB
   }
   if(!CLOUD_OK){
     spinEl.style.display='none';
-    msgEl.textContent='⚠️ No cloud database configured yet';
-    errEl.style.display='block';
-    errEl.textContent='Data added right now will only be saved on THIS device/browser — it will not show up on other computers. Ask whoever set this up to add the firebaseConfig values near the top of the script, then reload.';
     contBtn.style.display='block';
+    errEl.style.display='block';
+    if(FB_INIT_ERROR){
+      msgEl.textContent='⚠️ Could not load the cloud database engine';
+      errEl.textContent=FB_INIT_ERROR+' — you can still use this device offline, but data will NOT sync with other computers until this loads.';
+    } else {
+      msgEl.textContent='⚠️ No cloud database configured yet';
+      errEl.textContent='Data added right now will only be saved on THIS device/browser — it will not show up on other computers. Ask whoever set this up to add the firebaseConfig values near the top of the script, then reload.';
+    }
     return; // wait for the person to actually read this before entering the app
   }
   bootEl.style.display='none';
