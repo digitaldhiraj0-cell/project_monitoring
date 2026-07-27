@@ -8,13 +8,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@300;400;500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#0d1117; --surface:#161b22; --surface2:#21262d; --surface3:#30363d;
-  --border:#30363d; --border2:#444c56;
-  --primary:#2f81f7; --primary-d:#1f6feb; --primary-glow:rgba(47,129,247,0.15);
-  --accent:#f78166; --accent2:#3fb950; --accent3:#d2a8ff; --accent4:#ffa657;
-  --text:#e6edf3; --text2:#8b949e; --text3:#6e7681;
-  --red:#f85149; --green:#3fb950; --yellow:#d29922; --purple:#8b5cf6;
-  --shadow:0 8px 32px rgba(0,0,0,0.4);
+  --bg:#f4f6f9; --surface:#ffffff; --surface2:#eef1f5; --surface3:#e2e6ec;
+  --border:#e0e4ea; --border2:#c9d0d9;
+  --primary:#2563eb; --primary-d:#1d4ed8; --primary-glow:rgba(37,99,235,0.10);
+  --accent:#c2410c; --accent2:#15803d; --accent3:#7c3aed; --accent4:#a15c07;
+  --text:#111827; --text2:#4b5563; --text3:#6b7280;
+  --red:#dc2626; --green:#15803d; --yellow:#b45309; --purple:#7c3aed;
+  --shadow:0 4px 24px rgba(15,23,42,0.07);
   --r:12px; --r-sm:8px; --r-lg:18px;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -41,19 +41,19 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 /* ─── AUTH ─── */
 #auth-screen{
   height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  background:linear-gradient(160deg,#0d1117 0%,#161b22 50%,#0d1117 100%);
+  background:linear-gradient(160deg,#eef2f7 0%,#ffffff 50%,#eef2f7 100%);
   padding:20px;overflow-y:auto;
 }
 .auth-glow{
   position:absolute;top:-100px;left:50%;transform:translateX(-50%);
   width:400px;height:400px;border-radius:50%;
-  background:radial-gradient(circle,rgba(47,129,247,0.12) 0%,transparent 70%);
+  background:radial-gradient(circle,rgba(37,99,235,0.10) 0%,transparent 70%);
   pointer-events:none;
 }
 .auth-logo{
   width:88px;height:88px;border-radius:50%;background:#fff;
   display:flex;align-items:center;justify-content:center;
-  box-shadow:0 0 0 4px rgba(47,129,247,0.2),0 0 40px rgba(47,129,247,0.15);
+  box-shadow:0 0 0 4px rgba(37,99,235,0.15),0 0 40px rgba(37,99,235,0.12);
   overflow:hidden;margin-bottom:14px;flex:none;
 }
 .auth-logo img{width:100%;height:100%;object-fit:contain}
@@ -84,8 +84,8 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 }
 .btn-primary:active{transform:scale(.98)}
 .btn-primary:hover{background:var(--primary-d)}
-.auth-err{background:rgba(248,81,73,.1);border:1px solid rgba(248,81,73,.3);color:var(--red);padding:9px 12px;border-radius:var(--r-sm);font-size:12px;font-weight:600;margin-bottom:12px;display:none;text-align:center}
-.auth-ok{background:rgba(63,185,80,.1);border:1px solid rgba(63,185,80,.3);color:var(--green);padding:9px 12px;border-radius:var(--r-sm);font-size:12px;font-weight:600;margin-bottom:12px;display:none;text-align:center}
+.auth-err{background:rgba(220,38,38,.1);border:1px solid rgba(220,38,38,.3);color:var(--red);padding:9px 12px;border-radius:var(--r-sm);font-size:12px;font-weight:600;margin-bottom:12px;display:none;text-align:center}
+.auth-ok{background:rgba(21,128,61,.1);border:1px solid rgba(21,128,61,.3);color:var(--green);padding:9px 12px;border-radius:var(--r-sm);font-size:12px;font-weight:600;margin-bottom:12px;display:none;text-align:center}
 .otp-row{display:flex;gap:8px;margin-bottom:12px}
 .otp-single-input{
   width:100%;padding:12px 14px;text-align:center;font-size:22px;font-weight:700;
@@ -99,7 +99,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .otp-single-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
 .otp-single-input[type=number]{-moz-appearance:textfield;appearance:textfield}
 .otp-row input:focus{border-color:var(--primary)}
-.otp-hint{font-size:11px;color:var(--text3);margin-bottom:10px;padding:8px;background:rgba(47,129,247,.08);border-radius:6px;font-family:'DM Mono',monospace}
+.otp-hint{font-size:11px;color:var(--text3);margin-bottom:10px;padding:8px;background:rgba(37,99,235,.08);border-radius:6px;font-family:'DM Mono',monospace}
 .link-btn{background:none;border:none;color:var(--primary);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;padding:0;text-decoration:underline}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 
@@ -170,9 +170,9 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .btn-pr:hover{background:var(--primary-d)}
 .btn-out{background:transparent;color:var(--text2);border:1px solid var(--border)}
 .btn-out:hover{background:var(--surface2);color:var(--text)}
-.btn-danger{background:rgba(248,81,73,.15);color:var(--red);border:1px solid rgba(248,81,73,.3)}
-.btn-danger:hover{background:rgba(248,81,73,.25)}
-.btn-success{background:rgba(63,185,80,.15);color:var(--green);border:1px solid rgba(63,185,80,.3)}
+.btn-danger{background:rgba(220,38,38,.15);color:var(--red);border:1px solid rgba(220,38,38,.3)}
+.btn-danger:hover{background:rgba(220,38,38,.25)}
+.btn-success{background:rgba(21,128,61,.15);color:var(--green);border:1px solid rgba(21,128,61,.3)}
 .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:12px}
 .card-title{font-size:14px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
 .stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:16px}
@@ -185,12 +185,12 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .stat-lbl{font-size:11px;color:var(--text2);margin-top:4px}
 .stat-icon{position:absolute;top:12px;right:12px;font-size:20px;opacity:.2}
 .tag{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
-.tag-blue{background:rgba(47,129,247,.15);color:var(--primary)}
-.tag-green{background:rgba(63,185,80,.15);color:var(--green)}
-.tag-red{background:rgba(248,81,73,.15);color:var(--red)}
-.tag-yellow{background:rgba(210,153,34,.15);color:var(--yellow)}
-.tag-purple{background:rgba(210,168,255,.15);color:var(--accent3)}
-.tag-orange{background:rgba(255,166,87,.15);color:var(--accent4)}
+.tag-blue{background:rgba(37,99,235,.12);color:var(--primary)}
+.tag-green{background:rgba(21,128,61,.12);color:var(--green)}
+.tag-red{background:rgba(220,38,38,.12);color:var(--red)}
+.tag-yellow{background:rgba(180,83,9,.12);color:var(--yellow)}
+.tag-purple{background:rgba(124,58,237,.12);color:var(--accent3)}
+.tag-orange{background:rgba(217,119,6,.12);color:var(--accent4)}
 .badge-role{padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
 
 /* ─── TABLE ─── */
@@ -199,7 +199,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}
 th{padding:9px 12px;text-align:left;font-weight:600;color:var(--text2);border-bottom:1px solid var(--border);white-space:nowrap;font-size:11px;text-transform:uppercase;letter-spacing:.4px}
 td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:middle;color:var(--text)}
 tr:last-child td{border-bottom:none}
-tr:hover td{background:rgba(255,255,255,.02)}
+tr:hover td{background:rgba(15,23,42,.035)}
 .td-actions{display:flex;gap:5px;flex-wrap:wrap}
 .td-mono{font-family:'DM Mono',monospace;font-size:11px;color:var(--text2)}
 
@@ -240,6 +240,9 @@ tr:hover td{background:rgba(255,255,255,.02)}
 .modal-title{font-size:16px;font-weight:700}
 .modal-close{background:var(--surface2);border:none;width:28px;height:28px;border-radius:50%;font-size:14px;cursor:pointer;color:var(--text2);display:flex;align-items:center;justify-content:center}
 .form-section{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin:16px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.theme-purple{--primary:var(--purple)}
+.theme-purple .form-section{color:var(--purple);border-bottom-color:rgba(124,58,237,.35)}
+.theme-purple .fg label{color:var(--purple)}
 .modal-footer{display:flex;gap:8px;justify-content:flex-end;margin-top:20px;padding-top:14px;border-top:1px solid var(--border)}
 
 /* ─── FILE UPLOAD ─── */
@@ -250,7 +253,7 @@ tr:hover td{background:rgba(255,255,255,.02)}
   background:var(--bg);
 }
 .upload-slot:hover{border-color:var(--primary);background:var(--primary-glow)}
-.upload-slot.has-file{border-color:var(--green);border-style:solid;background:rgba(63,185,80,.05)}
+.upload-slot.has-file{border-color:var(--green);border-style:solid;background:rgba(21,128,61,.05)}
 .upload-slot input{position:absolute;inset:0;opacity:0;cursor:pointer}
 .up-icon{font-size:22px;margin-bottom:5px}
 .up-label{font-size:10px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.3px}
@@ -265,7 +268,7 @@ tr:hover td{background:rgba(255,255,255,.02)}
   background:var(--surface);border:1px solid var(--border);border-radius:var(--r);
   padding:16px;margin-bottom:10px;cursor:pointer;transition:border-color .2s,background .2s;
 }
-.office-card:hover{border-color:var(--primary);background:rgba(47,129,247,.03)}
+.office-card:hover{border-color:var(--primary);background:rgba(37,99,235,.03)}
 .office-card.selected{border-color:var(--primary);background:var(--primary-glow)}
 .office-hdr{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px}
 .office-name{font-size:14px;font-weight:700}
@@ -280,9 +283,9 @@ tr:hover td{background:rgba(255,255,255,.02)}
   transition:transform .15s;flex:none;
 }
 .contact-btn:active{transform:scale(.9)}
-.cb-call{background:rgba(63,185,80,.2)}
-.cb-sms{background:rgba(47,129,247,.2)}
-.cb-mail{background:rgba(210,168,255,.2)}
+.cb-call{background:rgba(21,128,61,.2)}
+.cb-sms{background:rgba(37,99,235,.2)}
+.cb-mail{background:rgba(124,58,237,.2)}
 
 /* ─── EMPTY STATE ─── */
 .empty-state{text-align:center;padding:48px 20px;color:var(--text2)}
@@ -319,7 +322,7 @@ tr:hover td{background:rgba(255,255,255,.02)}
 /* ─── MISC ─── */
 .divider{height:1px;background:var(--border);margin:14px 0}
 .pill{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600}
-.pill-num{background:rgba(47,129,247,.12);color:var(--primary);font-family:'DM Mono',monospace;font-size:10px}
+.pill-num{background:rgba(37,99,235,.12);color:var(--primary);font-family:'DM Mono',monospace;font-size:10px}
 .detail-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);gap:12px;font-size:12px}
 .detail-row:last-child{border-bottom:none}
 .dk{color:var(--text2);font-weight:600;flex:none;width:130px}
@@ -1257,6 +1260,46 @@ function saveAccess(uid){
 // ════════════════════════════════════════════════════════
 const PROJ_LABELS={ncb:{label:'NCB',icon:'📋',get:gNCB,set:sNCB},sq:{label:'Sealed Quotation',icon:'🔒',get:gSQ,set:sSQ},cc:{label:'Consumer Committee',icon:'🤝',get:gCC,set:sCC}};
 
+const NEPAL_DISTRICTS=['Achham','Arghakhanchi','Baglung','Baitadi','Bajhang','Bajura','Banke','Bara','Bardiya','Bhaktapur','Bhojpur','Chitwan','Dadeldhura','Dailekh','Dang','Darchula','Dhading','Dhankuta','Dhanusha','Dolakha','Dolpa','Doti','Gorkha','Gulmi','Humla','Ilam','Jajarkot','Jhapa','Jumla','Kailali','Kalikot','Kanchanpur','Kapilvastu','Kaski','Kathmandu','Kavrepalanchok','Khotang','Lalitpur','Lamjung','Mahottari','Makwanpur','Manang','Morang','Mugu','Musikot','Myagdi','Nawalparasi (East)','Nawalparasi (West)','Nuwakot','Okhaldhunga','Palpa','Panchthar','Parbat','Parsa','Pyuthan','Ramechhap','Rasuwa','Rautahat','Rolpa','Rukum (East)','Rukum (West)','Rupandehi','Salyan','Sankhuwasabha','Saptari','Sarlahi','Sindhuli','Sindhupalchok','Siraha','Solukhumbu','Sunsari','Surkhet','Syangja','Tanahun','Taplejung','Terhathum','Udayapur'];
+
+function selectWithCustomHTML(selectId,inputId,options,currentVal,customPlaceholder,inputId2,customPlaceholder2){
+  // options: array of {value,label}
+  const inList=options.some(o=>o.value===currentVal);
+  const isCustom=!!currentVal && !inList;
+  const safeVal=(currentVal||'').toString().replace(/"/g,'&quot;');
+  const secondInputHTML=inputId2?`<input type="text" id="${inputId2}" placeholder="${customPlaceholder2||''}" style="margin-top:6px;display:${isCustom?'block':'none'}">`:'';
+  return `<select id="${selectId}" onchange="toggleCustomInput('${selectId}','${inputId}'${inputId2?`,'${inputId2}'`:''})">
+      <option value="">— Select —</option>
+      ${options.map(o=>`<option value="${o.value}" ${currentVal===o.value?'selected':''}>${o.label}</option>`).join('')}
+      <option value="__custom__" ${isCustom?'selected':''}>+ Other (type manually)</option>
+    </select>
+    <input type="text" id="${inputId}" placeholder="${customPlaceholder}" style="margin-top:6px;display:${isCustom?'block':'none'}" value="${isCustom?safeVal:''}">
+    ${secondInputHTML}`;
+}
+function toggleCustomInput(selectId,inputId,inputId2){
+  const sel=document.getElementById(selectId), inp=document.getElementById(inputId);
+  if(!sel||!inp) return;
+  const inp2=inputId2?document.getElementById(inputId2):null;
+  if(sel.value==='__custom__'){ inp.style.display='block'; inp.focus(); if(inp2) inp2.style.display='block'; }
+  else { inp.style.display='none'; inp.value=''; if(inp2){ inp2.style.display='none'; inp2.value=''; } }
+}
+function getSelectOrCustom(selectId,inputId){
+  const sel=document.getElementById(selectId);
+  if(!sel) return '';
+  if(sel.value==='__custom__') return (document.getElementById(inputId)?.value||'').trim();
+  return sel.value;
+}
+function resolveProjectType(rawTypeVal,rawTypeValNp){
+  const pts=gPT();
+  if(pts.some(p=>p.id===rawTypeVal)) return rawTypeVal;
+  const name=(rawTypeVal||'').trim();
+  if(!name) return '';
+  const nameNp=(rawTypeValNp||'').trim()||name;
+  const newPt={id:uid(),name,nameNp};
+  pts.push(newPt); setPath('project_types',pts);
+  return newPt.id;
+}
+
 function renderProjects(ptype){
   const sec=PROJ_LABELS[ptype];
   if(!hasAccess(ptype)) return '<div class="empty-state"><div class="es-icon">🔒</div><div>Access Denied</div><p>Contact your admin to enable access</p></div>';
@@ -1302,14 +1345,19 @@ function renderProjCards(projects,ptype){
         </div>`:''}
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:11px;margin-bottom:10px">
+        ${p.district?`<div><span style="color:var(--text2)">District:</span> ${p.district}${p.districtNp?' / '+p.districtNp:''}</div>`:''}
         ${p.pan?`<div><span style="color:var(--text2)">PAN:</span> <span class="td-mono">${p.pan}</span></div>`:''}
+        ${p.contractNo?`<div><span style="color:var(--text2)">Contract No:</span> <span class="td-mono">${p.contractNo}</span></div>`:''}
+        ${p.contractorName?`<div><span style="color:var(--text2)">Contractor:</span> ${p.contractorName}${p.contractorNameNp?' / '+p.contractorNameNp:''}</div>`:''}
         ${p.budgetCode?`<div><span style="color:var(--text2)">Budget:</span> <span class="td-mono">${p.budgetCode}</span></div>`:''}
         ${p.expenseCode?`<div><span style="color:var(--text2)">Expense:</span> <span class="td-mono">${p.expenseCode}</span></div>`:''}
         ${p.accountNo?`<div><span style="color:var(--text2)">A/C:</span> <span class="td-mono">${p.accountNo}</span></div>`:''}
+        ${p.budget?`<div><span style="color:var(--text2)">Budget:</span> <strong>${fmt(p.budget)}</strong></div>`:''}
         ${p.estimate?`<div><span style="color:var(--text2)">Estimate:</span> <strong>${fmt(p.estimate)}</strong></div>`:''}
         ${p.contractAmt?`<div><span style="color:var(--text2)">Contract:</span> <strong>${fmt(p.contractAmt)}</strong></div>`:''}
         ${p.deadline?`<div><span style="color:var(--text2)">Deadline:</span> ${p.deadline}</div>`:''}
-        ${p.officer?`<div style="grid-column:1/-1"><span style="color:var(--text2)">Officer:</span> ${p.officer}</div>`:''}
+        ${p.officer?`<div style="grid-column:1/-1"><span style="color:var(--text2)">Officer:</span> ${p.officer}${p.officerNp?' / '+p.officerNp:''}</div>`:''}
+        ${p.remarks?`<div style="grid-column:1/-1"><span style="color:var(--text2)">Remarks:</span> ${p.remarks}${p.remarksNp?' / '+p.remarksNp:''}</div>`:''}
       </div>
       <div>
         <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px">
@@ -1341,10 +1389,78 @@ function openAddProject(ptype){
   const pts=gPT();
   const offices=gO();
   const isSA=CU.role==='superadmin';
+  const officeSelectHTML=isSA?`<div class="fg"><label>Office</label><select id="pj-office"><option value="">—</option>${offices.map(o=>`<option value="${o.id}">${o.name}</option>`).join('')}</select></div>`:'';
+
+  if(ptype==='ncb'){
+    openModal(`${t('addProject')} — ${PROJ_LABELS[ptype].label}`,`
+      ${officeSelectHTML}
+      <div class="grid2">
+        <div class="fg"><label>Project Name (English)</label><input id="pj-name" placeholder="Project name"></div>
+        <div class="fg"><label>Project Name (Nepali)</label><input id="pj-nameNp" placeholder="परियोजनाको नाम"></div>
+      </div>
+      <div class="fg"><label>Activity Number</label><input id="pj-activityNo" placeholder="ACT-001"></div>
+      <div class="fg"><label>District (English)</label>${selectWithCustomHTML('pj-district','pj-district-custom',NEPAL_DISTRICTS.map(d=>({value:d,label:d})),'','Type district name')}</div>
+      <div class="fg"><label>District (Nepali)</label><input id="pj-districtNp" placeholder="जिल्लाको नाम (नेपालीमा)"></div>
+      <div class="fg"><label>Project Type</label>${selectWithCustomHTML('pj-type','pj-type-custom',pts.map(p=>({value:p.id,label:p.nameNp?`${p.name} / ${p.nameNp}`:p.name})),'','Type new project type (English)','pj-type-customNp','Type new project type (Nepali)')}</div>
+
+      <div class="form-section">Financial Details</div>
+      <div class="grid2">
+        <div class="fg"><label>Allocated Budget (NPR)</label><input type="number" id="pj-budget" placeholder="0"></div>
+        <div class="fg"><label>Cost Estimate (NPR)</label><input type="number" id="pj-estimate" placeholder="0"></div>
+      </div>
+
+      <div class="form-section">Contract &amp; Contractor</div>
+      <div class="fg"><label>Contract Number</label><input id="pj-contractNo" placeholder="Contract no."></div>
+      <div class="grid2">
+        <div class="fg"><label>Contractor's Name (English)</label><input id="pj-contractorName" placeholder="Contractor / firm name"></div>
+        <div class="fg"><label>Contractor's Name (Nepali)</label><input id="pj-contractorNameNp" placeholder="ठेकेदार / फर्मको नाम"></div>
+      </div>
+      <div class="fg"><label>${t('pan')}</label><input id="pj-pan" placeholder="601XXXXXXX"></div>
+      <div class="grid2">
+        <div class="fg"><label>Proprietor's Name (English)</label><input id="pj-proprietorName" placeholder="Proprietor name"></div>
+        <div class="fg"><label>Proprietor's Name (Nepali)</label><input id="pj-proprietorNameNp" placeholder="मालिकको नाम"></div>
+      </div>
+      <div class="fg"><label>Proprietor's Phone Number</label><input id="pj-proprietorPhone" placeholder="98XXXXXXXX"></div>
+      <div class="fg"><label>Email Address</label><input type="email" id="pj-email" placeholder="name@example.com"></div>
+
+      <div class="form-section">Timeline &amp; Progress</div>
+      <div class="grid2">
+        <div class="fg"><label>Agreement Date</label><input type="date" id="pj-contractDate"></div>
+        <div class="fg"><label>Completion Date</label><input type="date" id="pj-deadline"></div>
+      </div>
+      <div class="fg"><label>Progress to Date (0–100%)</label><input type="number" id="pj-progress" min="0" max="100" placeholder="0" value="0"></div>
+
+      <div class="form-section">Authority &amp; Status</div>
+      <div class="grid2">
+        <div class="fg"><label>Contract Approving Authority (English)</label><input id="pj-officer" placeholder="Approving authority / officer"></div>
+        <div class="fg"><label>Contract Approving Authority (Nepali)</label><input id="pj-officerNp" placeholder="स्वीकृत गर्ने अधिकारी"></div>
+      </div>
+      <div class="fg"><label>${t('status')}</label><select id="pj-status"><option>Running</option><option>Complete</option><option>Pending</option></select></div>
+      <div class="grid2">
+        <div class="fg"><label>Remarks (English)</label><textarea id="pj-remarks" rows="3" placeholder="Additional notes..."></textarea></div>
+        <div class="fg"><label>Remarks (Nepali)</label><textarea id="pj-remarksNp" rows="3" placeholder="थप जानकारी..."></textarea></div>
+      </div>
+
+      <div class="form-section">Documents</div>
+      <div class="upload-grid">
+        <div class="upload-slot" id="us-photos"><input type="file" accept="image/*,.pdf" multiple onchange="handleUpload('us-photos','photos',this,'Photo/PDF')"><div class="up-icon">📷</div><div class="up-label">Work Photos</div><div class="up-name" id="un-photos">PDF/Image</div></div>
+        <div class="upload-slot" id="us-docs"><input type="file" accept=".pdf" multiple onchange="handleUpload('us-docs','docs',this,'PDF Doc')"><div class="up-icon">📄</div><div class="up-label">Documents (PDF)</div><div class="up-name" id="un-docs">PDF only</div></div>
+        <div class="upload-slot" id="us-estimate"><input type="file" accept=".xlsx,.xls" onchange="handleUpload('us-estimate','estimate',this,'Excel')"><div class="up-icon">📊</div><div class="up-label">Estimate File</div><div class="up-name" id="un-estimate">Excel (.xlsx)</div></div>
+        <div class="upload-slot" id="us-extra"><input type="file" accept=".pdf,.xlsx,.xls,.doc,.docx" onchange="handleUpload('us-extra','extra',this,'File')"><div class="up-icon">📎</div><div class="up-label">Other Files</div><div class="up-name" id="un-extra">Any format</div></div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-out" onclick="closeModal()">${t('cancel')}</button>
+        <button class="btn btn-pr" onclick="saveProject('${ptype}',null)">${t('save')}</button>
+      </div>`);
+    window._uploadedFiles={};
+    return;
+  }
+
   openModal(`${t('addProject')} — ${PROJ_LABELS[ptype].label}`,`
     <div class="fg"><label>${t('projectName')} (English)</label><input id="pj-name" placeholder="Project name"></div>
     <div class="fg"><label>Project Name (Nepali)</label><input id="pj-nameNp" placeholder="परियोजनाको नाम"></div>
-    ${isSA?`<div class="fg"><label>Office</label><select id="pj-office"><option value="">—</option>${offices.map(o=>`<option value="${o.id}">${o.name}</option>`).join('')}</select></div>`:''}
+    ${officeSelectHTML}
     <div class="fg"><label>Project Type</label><select id="pj-type"><option value="">— Select —</option>${pts.map(p=>`<option value="${p.id}">${p.name} / ${p.nameNp}</option>`).join('')}</select></div>
 
     <div class="form-section">Identification Numbers</div>
@@ -1402,11 +1518,79 @@ function handleUpload(slotId,key,input,label){
 function openEditProject(ptype,id){
   const list=PROJ_LABELS[ptype].get(); const p=list.find(x=>x.id===id); if(!p) return;
   const pts=gPT(); const offices=gO(); const isSA=CU.role==='superadmin';
+  const officeSelectHTML=isSA?`<div class="fg"><label>Office</label><select id="pj-office">${offices.map(o=>`<option value="${o.id}" ${o.id===p.officeId?'selected':''}>${o.name}</option>`).join('')}</select></div>`:'';
+  const docsHTML=`<div class="form-section">Documents</div>
+    <div class="upload-grid">
+      <div class="upload-slot ${p.files?.photos?'has-file':''}" id="us-photos"><input type="file" accept="image/*,.pdf" multiple onchange="handleUpload('us-photos','photos',this,'Photo')"><div class="up-icon">${p.files?.photos?'✅':'📷'}</div><div class="up-label">Work Photos</div><div class="up-name" id="un-photos">${p.files?.photos?.name||'PDF/Image'}</div></div>
+      <div class="upload-slot ${p.files?.docs?'has-file':''}" id="us-docs"><input type="file" accept=".pdf" multiple onchange="handleUpload('us-docs','docs',this,'PDF')"><div class="up-icon">${p.files?.docs?'✅':'📄'}</div><div class="up-label">Documents</div><div class="up-name" id="un-docs">${p.files?.docs?.name||'PDF'}</div></div>
+      <div class="upload-slot ${p.files?.estimate?'has-file':''}" id="us-estimate"><input type="file" accept=".xlsx,.xls" onchange="handleUpload('us-estimate','estimate',this,'Excel')"><div class="up-icon">${p.files?.estimate?'✅':'📊'}</div><div class="up-label">Estimate</div><div class="up-name" id="un-estimate">${p.files?.estimate?.name||'Excel'}</div></div>
+      <div class="upload-slot ${p.files?.extra?'has-file':''}" id="us-extra"><input type="file" accept=".pdf,.xlsx,.xls" onchange="handleUpload('us-extra','extra',this,'File')"><div class="up-icon">${p.files?.extra?'✅':'📎'}</div><div class="up-label">Other</div><div class="up-name" id="un-extra">${p.files?.extra?.name||'Any'}</div></div>
+    </div>`;
+
+  if(ptype==='ncb'){
+    openModal(`Edit — ${p.name}`,`
+      ${officeSelectHTML}
+      <div class="grid2">
+        <div class="fg"><label>Project Name (English)</label><input id="pj-name" value="${p.name||''}"></div>
+        <div class="fg"><label>Project Name (Nepali)</label><input id="pj-nameNp" value="${p.nameNp||''}"></div>
+      </div>
+      <div class="fg"><label>Activity Number</label><input id="pj-activityNo" value="${p.activityNo||''}"></div>
+      <div class="fg"><label>District (English)</label>${selectWithCustomHTML('pj-district','pj-district-custom',NEPAL_DISTRICTS.map(d=>({value:d,label:d})),p.district||'','Type district name')}</div>
+      <div class="fg"><label>District (Nepali)</label><input id="pj-districtNp" value="${p.districtNp||''}" placeholder="जिल्लाको नाम (नेपालीमा)"></div>
+      <div class="fg"><label>Project Type</label>${selectWithCustomHTML('pj-type','pj-type-custom',pts.map(pt=>({value:pt.id,label:pt.nameNp?`${pt.name} / ${pt.nameNp}`:pt.name})),p.type||'','Type new project type (English)','pj-type-customNp','Type new project type (Nepali)')}</div>
+
+      <div class="form-section">Financial Details</div>
+      <div class="grid2">
+        <div class="fg"><label>Allocated Budget (NPR)</label><input type="number" id="pj-budget" value="${p.budget||0}"></div>
+        <div class="fg"><label>Cost Estimate (NPR)</label><input type="number" id="pj-estimate" value="${p.estimate||0}"></div>
+      </div>
+
+      <div class="form-section">Contract &amp; Contractor</div>
+      <div class="fg"><label>Contract Number</label><input id="pj-contractNo" value="${p.contractNo||''}"></div>
+      <div class="grid2">
+        <div class="fg"><label>Contractor's Name (English)</label><input id="pj-contractorName" value="${p.contractorName||''}"></div>
+        <div class="fg"><label>Contractor's Name (Nepali)</label><input id="pj-contractorNameNp" value="${p.contractorNameNp||''}"></div>
+      </div>
+      <div class="fg"><label>${t('pan')}</label><input id="pj-pan" value="${p.pan||''}"></div>
+      <div class="grid2">
+        <div class="fg"><label>Proprietor's Name (English)</label><input id="pj-proprietorName" value="${p.proprietorName||''}"></div>
+        <div class="fg"><label>Proprietor's Name (Nepali)</label><input id="pj-proprietorNameNp" value="${p.proprietorNameNp||''}"></div>
+      </div>
+      <div class="fg"><label>Proprietor's Phone Number</label><input id="pj-proprietorPhone" value="${p.proprietorPhone||''}"></div>
+      <div class="fg"><label>Email Address</label><input type="email" id="pj-email" value="${p.email||''}"></div>
+
+      <div class="form-section">Timeline &amp; Progress</div>
+      <div class="grid2">
+        <div class="fg"><label>Agreement Date</label><input type="date" id="pj-contractDate" value="${p.contractDate||''}"></div>
+        <div class="fg"><label>Completion Date</label><input type="date" id="pj-deadline" value="${p.deadline||''}"></div>
+      </div>
+      <div class="fg"><label>Progress to Date (0–100%)</label><input type="number" id="pj-progress" min="0" max="100" value="${Math.round((p.progress||0)*100)}"></div>
+
+      <div class="form-section">Authority &amp; Status</div>
+      <div class="grid2">
+        <div class="fg"><label>Contract Approving Authority (English)</label><input id="pj-officer" value="${p.officer||''}"></div>
+        <div class="fg"><label>Contract Approving Authority (Nepali)</label><input id="pj-officerNp" value="${p.officerNp||''}"></div>
+      </div>
+      <div class="fg"><label>${t('status')}</label><select id="pj-status">${['Running','Complete','Pending'].map(s=>`<option ${p.status===s?'selected':''}>${s}</option>`).join('')}</select></div>
+      <div class="grid2">
+        <div class="fg"><label>Remarks (English)</label><textarea id="pj-remarks" rows="3">${p.remarks||''}</textarea></div>
+        <div class="fg"><label>Remarks (Nepali)</label><textarea id="pj-remarksNp" rows="3">${p.remarksNp||''}</textarea></div>
+      </div>
+
+      ${docsHTML}
+      <div class="modal-footer">
+        <button class="btn btn-out" onclick="closeModal()">${t('cancel')}</button>
+        <button class="btn btn-pr" onclick="saveProject('${ptype}','${id}')">${t('save')}</button>
+      </div>`);
+    _uploadedFiles=Object.assign({},p.files||{});
+    return;
+  }
+
   openModal(`Edit — ${p.name}`,`
     <div class="fg"><label>Project Name (English)</label><input id="pj-name" value="${p.name}"></div>
     <div class="fg"><label>Project Name (Nepali)</label><input id="pj-nameNp" value="${p.nameNp||''}"></div>
-    ${isSA?`<div class="fg"><label>Office</label><select id="pj-office">${offices.map(o=>`<option value="${o.id}" ${o.id===p.officeId?'selected':''}>${o.name}</option>`).join('')}</select></div>`:''}
-    <div class="fg"><label>Project Type</label><select id="pj-type">${pts.map(t=>`<option value="${t.id}" ${t.id===p.type?'selected':''}>${t.name}</option>`).join('')}</select></div>
+    ${officeSelectHTML}
+    <div class="fg"><label>Project Type</label><select id="pj-type">${pts.map(pt=>`<option value="${pt.id}" ${pt.id===p.type?'selected':''}>${pt.name}</option>`).join('')}</select></div>
     <div class="form-section">Identification</div>
     <div class="grid2">
       <div class="fg"><label>PAN</label><input id="pj-pan" value="${p.pan||''}"></div>
@@ -1432,13 +1616,7 @@ function openEditProject(ptype,id){
       <div class="fg"><label>Status</label><select id="pj-status">${['Running','Complete','Pending'].map(s=>`<option ${p.status===s?'selected':''}>${s}</option>`).join('')}</select></div>
       <div class="fg"><label>Progress (0–100)</label><input type="number" id="pj-progress" min="0" max="100" value="${Math.round((p.progress||0)*100)}"></div>
     </div>
-    <div class="form-section">Documents</div>
-    <div class="upload-grid">
-      <div class="upload-slot ${p.files?.photos?'has-file':''}" id="us-photos"><input type="file" accept="image/*,.pdf" multiple onchange="handleUpload('us-photos','photos',this,'Photo')"><div class="up-icon">${p.files?.photos?'✅':'📷'}</div><div class="up-label">Work Photos</div><div class="up-name" id="un-photos">${p.files?.photos?.name||'PDF/Image'}</div></div>
-      <div class="upload-slot ${p.files?.docs?'has-file':''}" id="us-docs"><input type="file" accept=".pdf" multiple onchange="handleUpload('us-docs','docs',this,'PDF')"><div class="up-icon">${p.files?.docs?'✅':'📄'}</div><div class="up-label">Documents</div><div class="up-name" id="un-docs">${p.files?.docs?.name||'PDF'}</div></div>
-      <div class="upload-slot ${p.files?.estimate?'has-file':''}" id="us-estimate"><input type="file" accept=".xlsx,.xls" onchange="handleUpload('us-estimate','estimate',this,'Excel')"><div class="up-icon">${p.files?.estimate?'✅':'📊'}</div><div class="up-label">Estimate</div><div class="up-name" id="un-estimate">${p.files?.estimate?.name||'Excel'}</div></div>
-      <div class="upload-slot ${p.files?.extra?'has-file':''}" id="us-extra"><input type="file" accept=".pdf,.xlsx,.xls" onchange="handleUpload('us-extra','extra',this,'File')"><div class="up-icon">${p.files?.extra?'✅':'📎'}</div><div class="up-label">Other</div><div class="up-name" id="un-extra">${p.files?.extra?.name||'Any'}</div></div>
-    </div>
+    ${docsHTML}
     <div class="modal-footer">
       <button class="btn btn-out" onclick="closeModal()">${t('cancel')}</button>
       <button class="btn btn-pr" onclick="saveProject('${ptype}','${id}')">${t('save')}</button>
@@ -1453,22 +1631,55 @@ function saveProject(ptype,editId){
   const list=PROJ_LABELS[ptype].get();
   const existing=editId?list.find(x=>x.id===editId):{};
   const merged=Object.assign({},existing.files||{},_uploadedFiles);
-  const proj={
-    ...(existing||{}),
-    id:editId||uid(),
-    officeId:isSA?(v('pj-office')||null):(CU.officeId||null),
-    name:v('pj-name'), nameNp:v('pj-nameNp'),
-    type:v('pj-type'),
-    pan:v('pj-pan'), activityNo:v('pj-activityNo'),
-    budgetCode:v('pj-budgetCode'), expenseCode:v('pj-expenseCode'), accountNo:v('pj-accountNo'),
-    estimate:parseFloat(v('pj-estimate'))||0,
-    contractAmt:parseFloat(v('pj-contractAmt'))||0,
-    contractDate:v('pj-contractDate'), deadline:v('pj-deadline'),
-    officer:v('pj-officer'),
-    status:v('pj-status'),
-    progress:(parseFloat(v('pj-progress'))||0)/100,
-    files:merged,
-  };
+
+  let proj;
+  if(ptype==='ncb'){
+    const typeSel=document.getElementById('pj-type');
+    const typeRaw=getSelectOrCustom('pj-type','pj-type-custom');
+    const typeRawNp=typeSel?.value==='__custom__' ? (document.getElementById('pj-type-customNp')?.value||'').trim() : '';
+    proj={
+      ...(existing||{}),
+      id:editId||uid(),
+      officeId:isSA?(v('pj-office')||null):(CU.officeId||null),
+      nameNp:v('pj-nameNp'), name:v('pj-name'),
+      activityNo:v('pj-activityNo'),
+      district:getSelectOrCustom('pj-district','pj-district-custom'), districtNp:v('pj-districtNp'),
+      type:resolveProjectType(typeRaw,typeRawNp),
+      budget:parseFloat(v('pj-budget'))||0,
+      estimate:parseFloat(v('pj-estimate'))||0,
+      contractNo:v('pj-contractNo'),
+      contractorName:v('pj-contractorName'), contractorNameNp:v('pj-contractorNameNp'),
+      pan:v('pj-pan'),
+      proprietorName:v('pj-proprietorName'), proprietorNameNp:v('pj-proprietorNameNp'),
+      proprietorPhone:v('pj-proprietorPhone'),
+      email:v('pj-email'),
+      contractDate:v('pj-contractDate'), deadline:v('pj-deadline'),
+      progress:(parseFloat(v('pj-progress'))||0)/100,
+      officer:v('pj-officer'), officerNp:v('pj-officerNp'),
+      status:v('pj-status'),
+      remarks:v('pj-remarks'), remarksNp:v('pj-remarksNp'),
+      files:merged,
+    };
+    // legacy fields not used in the NCB form anymore
+    delete proj.budgetCode; delete proj.expenseCode; delete proj.accountNo; delete proj.contractAmt;
+  } else {
+    proj={
+      ...(existing||{}),
+      id:editId||uid(),
+      officeId:isSA?(v('pj-office')||null):(CU.officeId||null),
+      name:v('pj-name'), nameNp:v('pj-nameNp'),
+      type:v('pj-type'),
+      pan:v('pj-pan'), activityNo:v('pj-activityNo'),
+      budgetCode:v('pj-budgetCode'), expenseCode:v('pj-expenseCode'), accountNo:v('pj-accountNo'),
+      estimate:parseFloat(v('pj-estimate'))||0,
+      contractAmt:parseFloat(v('pj-contractAmt'))||0,
+      contractDate:v('pj-contractDate'), deadline:v('pj-deadline'),
+      officer:v('pj-officer'),
+      status:v('pj-status'),
+      progress:(parseFloat(v('pj-progress'))||0)/100,
+      files:merged,
+    };
+  }
   if(editId){ const i=list.findIndex(x=>x.id===editId); if(i>=0) list[i]=proj; }
   else list.push(proj);
   PROJ_LABELS[ptype].set(list); closeModal(); nav(ptype); toast('Project saved ✅');
@@ -1511,14 +1722,19 @@ function renderEmpCards(emps){
           <div style="font-weight:700;font-size:14px">${e.name}</div>
           ${e.nameNp?`<div style="font-size:11px;color:var(--text2)">${e.nameNp}</div>`:''}
           <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
-            <span class="tag tag-blue">${e.title||'—'}</span>
-            <span class="tag tag-purple">${e.dept||'—'}</span>
+            ${e.title?`<span class="tag tag-blue">${e.title}${e.titleNp?' / '+e.titleNp:''}</span>`:''}
+            ${e.classLevel?`<span class="tag tag-purple">${e.classLevel}${e.classLevelNp?' / '+e.classLevelNp:''}</span>`:''}
+            ${e.dept?`<span class="tag tag-purple">${e.dept}</span>`:''}
             ${CU.role==='superadmin'?`<span class="tag tag-orange" style="font-size:10px">${officeName(e.officeId)}</span>`:''}
           </div>
           <div style="margin-top:8px;font-size:12px;color:var(--text2);display:flex;flex-direction:column;gap:3px">
+            ${e.symbolNo?`<span>🔖 Symbol No: ${e.symbolNo}</span>`:''}
+            ${e.serviceGroup?`<span>🗂️ ${e.serviceGroup}${e.serviceGroupNp?' / '+e.serviceGroupNp:''}</span>`:''}
+            ${e.joiningDate?`<span>📅 Joined: ${e.joiningDate}</span>`:''}
             ${e.phone?`<span>📞 ${e.phone}</span>`:''}
             ${e.email?`<span>📧 ${e.email}</span>`:''}
             ${e.bank?`<span>🏦 ${e.bank}</span>`:''}
+            ${e.remarks?`<span>📝 ${e.remarks}${e.remarksNp?' / '+e.remarksNp:''}</span>`:''}
           </div>
         </div>
         <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">
@@ -1545,25 +1761,55 @@ function filterEmps(){
 
 function empForm(e={}){
   const isSA=CU.role==='superadmin';
-  return `
+  const officeFieldHTML=isSA
+    ? `<select id="em-office">${gO().map(o=>`<option value="${o.id}" ${o.id===e.officeId?'selected':''}>${o.name}${o.nameNp?' / '+o.nameNp:''}</option>`).join('')}</select>`
+    : `<input value="${officeName(CU.officeId)}${(()=>{const o=gO().find(o=>o.id===CU.officeId); return o?.nameNp?' / '+o.nameNp:'';})()}" disabled style="opacity:.7">`;
+  return `<div class="theme-purple">
+    <div class="fg"><label>Ministry / Office Name</label>${officeFieldHTML}</div>
+
     <div class="grid2">
-      <div class="fg"><label>Full Name</label><input id="em-name" value="${e.name||''}" placeholder="Full name"></div>
-      <div class="fg"><label>Name (Nepali)</label><input id="em-nameNp" value="${e.nameNp||''}" placeholder="नाम"></div>
+      <div class="fg"><label>Employee's Full Name (English)</label><input id="em-name" value="${e.name||''}" placeholder="Full name"></div>
+      <div class="fg"><label>Employee's Full Name (Nepali)</label><input id="em-nameNp" value="${e.nameNp||''}" placeholder="पूरा नाम"></div>
+    </div>
+
+    <div class="fg"><label>Symbol Number</label><input id="em-symbolNo" value="${e.symbolNo||''}" placeholder="Symbol no."></div>
+
+    <div class="grid2">
+      <div class="fg"><label>Position (English)</label><input id="em-title" value="${e.title||''}" placeholder="e.g. Engineer"></div>
+      <div class="fg"><label>Position (Nepali)</label><input id="em-titleNp" value="${e.titleNp||''}" placeholder="जस्तै: इन्जिनियर"></div>
+    </div>
+
+    <div class="fg"><label>Initial Appointment Date</label><input type="date" id="em-firstAppt" value="${e.firstAppt||''}"></div>
+
+    <div class="grid2">
+      <div class="fg"><label>Service / Group / Sub-group (English)</label><input id="em-serviceGroup" value="${e.serviceGroup||''}" placeholder="e.g. Engineering Service, Civil Group"></div>
+      <div class="fg"><label>Service / Group / Sub-group (Nepali)</label><input id="em-serviceGroupNp" value="${e.serviceGroupNp||''}" placeholder="जस्तै: इन्जिनियरिङ सेवा, सिभिल समूह"></div>
+    </div>
+
+    <div class="grid2">
+      <div class="fg"><label>Class / Level (English)</label><input id="em-classLevel" value="${e.classLevel||''}" placeholder="e.g. Level 8"></div>
+      <div class="fg"><label>Class / Level (Nepali)</label><input id="em-classLevelNp" value="${e.classLevelNp||''}" placeholder="जस्तै: तह ८"></div>
+    </div>
+
+    <div class="grid2">
+      <div class="fg"><label>Date of Birth</label><input type="date" id="em-dob" value="${e.dob||''}"></div>
+      <div class="fg"><label>Joining Date</label><input type="date" id="em-joiningDate" value="${e.joiningDate||''}"></div>
     </div>
     <div class="grid2">
-      <div class="fg"><label>${t('title')}</label><input id="em-title" value="${e.title||''}" placeholder="e.g. Engineer"></div>
-      <div class="fg"><label>${t('dept')}</label><input id="em-dept" value="${e.dept||''}" placeholder="e.g. Engineering"></div>
+      <div class="fg"><label>Email</label><input id="em-email" value="${e.email||''}" placeholder="email"></div>
+      <div class="fg"><label>Phone Number</label><input id="em-phone" value="${e.phone||''}" placeholder="98XXXXXXXX"></div>
     </div>
+
     <div class="grid2">
-      <div class="fg"><label>${t('phone')}</label><input id="em-phone" value="${e.phone||''}" placeholder="98XXXXXXXX"></div>
-      <div class="fg"><label>${t('email')}</label><input id="em-email" value="${e.email||''}" placeholder="email"></div>
+      <div class="fg"><label>Remarks (English)</label><textarea id="em-remarks" rows="3" placeholder="Additional notes...">${e.remarks||''}</textarea></div>
+      <div class="fg"><label>Remarks (Nepali)</label><textarea id="em-remarksNp" rows="3" placeholder="थप जानकारी...">${e.remarksNp||''}</textarea></div>
     </div>
-    <div class="fg"><label>${t('bank')}</label><input id="em-bank" value="${e.bank||''}" placeholder="Bank name — Account number"></div>
-    ${isSA?`<div class="fg"><label>Office</label><select id="em-office">${gO().map(o=>`<option value="${o.id}" ${o.id===e.officeId?'selected':''}>${o.name}</option>`).join('')}</select></div>`:''}
+
     <div class="modal-footer">
       <button class="btn btn-out" onclick="closeModal()">${t('cancel')}</button>
       <button class="btn btn-pr" onclick="saveEmployee('${e.id||''}')">${t('save')}</button>
-    </div>`;
+    </div>
+  </div>`;
 }
 
 function openAddEmployee(){ openModal(t('addEmployee'),empForm()); }
@@ -1574,10 +1820,21 @@ function saveEmployee(editId){
   if(!v('em-name')){toast('Name required','var(--red)');return;}
   const isSA=CU.role==='superadmin';
   const emps=gEmp();
+  const existing=editId?emps.find(x=>x.id===editId):{};
   const obj={
-    id:editId||uid(), name:v('em-name'), nameNp:v('em-nameNp'),
-    title:v('em-title'), dept:v('em-dept'),
-    phone:v('em-phone'), email:v('em-email'), bank:v('em-bank'),
+    ...(existing||{}),
+    id:editId||uid(),
+    name:v('em-name'), nameNp:v('em-nameNp'),
+    symbolNo:v('em-symbolNo'),
+    title:v('em-title'), titleNp:v('em-titleNp'),
+    firstAppt:v('em-firstAppt'),
+    serviceGroup:v('em-serviceGroup'), serviceGroupNp:v('em-serviceGroupNp'),
+    classLevel:v('em-classLevel'), classLevelNp:v('em-classLevelNp'),
+    dob:v('em-dob'),
+    joiningDate:v('em-joiningDate'),
+    email:v('em-email'),
+    phone:v('em-phone'),
+    remarks:v('em-remarks'), remarksNp:v('em-remarksNp'),
     officeId:isSA?(v('em-office')||null):(CU.officeId||null),
   };
   if(editId){ const i=emps.findIndex(x=>x.id===editId); if(i>=0) emps[i]=obj; }
