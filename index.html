@@ -943,6 +943,99 @@ function updateReport(){
   const el=document.getElementById('report-results');
   if(el) el.innerHTML=reportTableHTML(reportFilteredRows());
 }
+function projectDetailBlockHTML(p){
+  const kv=(label,val)=> val ? `<div class="kv"><b>${label}</b><span>${val}</span></div>` : '';
+  const hasPG=p.pgBank||p.pgAmount||p.pgGuaranteeNo;
+  const hasAPG=p.apgBank||p.apgAmount||p.apgGuaranteeNo;
+  return `<div class="proj">
+    <h2>${p.name||'—'}${p.nameNp?' / '+p.nameNp:''}</h2>
+    <div class="row">
+      ${kv('Report Type',PROJ_LABELS[p._ptype]?.label)}
+      ${kv('District',p._district?p._district+(p.districtNp?' / '+p.districtNp:''):'')}
+      ${kv('Nature',p._typeName)}
+      ${kv('Status',p.status)}
+      ${kv('Office',p._officeName)}
+      ${kv('Activity No.',p.activityNo)}
+      ${kv('Contract No.',p.contractNo)}
+      ${kv('PAN',p.pan)}
+      ${kv('Contractor',p.contractorName?p.contractorName+(p.contractorNameNp?' / '+p.contractorNameNp:''):'')}
+      ${kv('Proprietor',p.proprietorName?p.proprietorName+(p.proprietorNameNp?' / '+p.proprietorNameNp:''):'')}
+      ${kv('Proprietor Phone',p.proprietorPhone)}
+      ${kv('Email',p.email)}
+      ${kv('Allocated Budget',p.budget?fmt(p.budget):'')}
+      ${kv('Cost Estimate',p.estimate?fmt(p.estimate):'')}
+      ${kv('Contract Amount',p.contractAmt?fmt(p.contractAmt):'')}
+      ${kv('Agreement Date',p.contractDate)}
+      ${kv('Completion Date',p.deadline)}
+      ${kv('Progress',pct(p.progress))}
+      ${kv('Approving Authority',p.officer?p.officer+(p.officerNp?' / '+p.officerNp:''):'')}
+    </div>
+    ${(hasPG||hasAPG)?`<div class="section-label">Bank Guarantees</div><div class="row">
+      ${hasPG?`
+        ${kv('Performance Guarantee — Bank',p.pgBank)}
+        ${kv('PG Branch',p.pgBranch?p.pgBranch+(p.pgDistrict?', '+p.pgDistrict:''):'')}
+        ${kv('PG Guarantee No.',p.pgGuaranteeNo)}
+        ${kv('PG Issue Date',p.pgIssueDate)}
+        ${kv('PG Expire Date',p.pgExpireDate)}
+        ${kv('PG Amount',p.pgAmount?fmt(p.pgAmount)+' — '+numberToWordsEnglish(p.pgAmount):'')}
+      `:''}
+      ${hasAPG?`
+        ${kv('Advance Payment Guarantee — Bank',p.apgBank)}
+        ${kv('APG Branch',p.apgBranch?p.apgBranch+(p.apgDistrict?', '+p.apgDistrict:''):'')}
+        ${kv('APG Guarantee No.',p.apgGuaranteeNo)}
+        ${kv('APG Issue Date',p.apgIssueDate)}
+        ${kv('APG Expire Date',p.apgExpireDate)}
+        ${kv('APG Amount',p.apgAmount?fmt(p.apgAmount)+' — '+numberToWordsEnglish(p.apgAmount):'')}
+      `:''}
+    </div>`:''}
+    ${p.remarks?`<div class="section-label">Remarks</div><div style="font-size:11.5px">${p.remarks}${p.remarksNp?' / '+p.remarksNp:''}</div>`:''}
+  </div>`;
+}
+function printReport(){
+  const rows=reportFilteredRows();
+  const ptypeSel=document.getElementById('rpt-ptype'), districtSel=document.getElementById('rpt-district'),
+        natureSel=document.getElementById('rpt-nature'), statusSel=document.getElementById('rpt-status');
+  const ptypeLabel=ptypeSel&&ptypeSel.value!=='all'?PROJ_LABELS[ptypeSel.value].label:'All';
+  const districtLabel=districtSel&&districtSel.value!=='all'?districtSel.value:'All';
+  const natureLabel=natureSel&&natureSel.value!=='all'?(gPT().find(pt=>pt.id===natureSel.value)?.name||'—'):'All';
+  const statusLabel=statusSel&&statusSel.value!=='all'?statusSel.value:'All';
+  const win=window.open('','_blank');
+  if(!win){ toast('Please allow pop-ups to print the report','var(--red)'); return; }
+  const generatedAt=new Date().toLocaleString();
+  const officeLabel=CU.role==='superadmin'?t('org'):(myOffice()?.name||'');
+  win.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>Project Report</title>
+    <style>
+      @page{ size:A4; margin:14mm; }
+      *{box-sizing:border-box}
+      body{font-family:Arial,Helvetica,sans-serif;color:#111;font-size:12px;margin:0;padding:0 0 30px}
+      h1{font-size:19px;margin:0 0 2px}
+      .meta{font-size:11px;color:#555;margin-bottom:4px}
+      .filters{font-size:11px;color:#333;margin-bottom:16px;padding:8px 10px;background:#f4f6f9;border-radius:6px}
+      .filters b{color:#111}
+      .proj{border:1px solid #ccc;border-radius:6px;padding:12px 16px;margin-bottom:12px;page-break-inside:avoid}
+      .proj h2{font-size:14px;margin:0 0 8px;color:#1d4ed8}
+      .row{display:flex;flex-wrap:wrap}
+      .kv{width:50%;font-size:11.5px;margin-bottom:4px;display:flex;padding-right:8px}
+      .kv b{width:160px;color:#555;flex:none;font-weight:600}
+      .section-label{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:#888;margin:10px 0 4px;border-bottom:1px solid #ddd;padding-bottom:2px;width:100%}
+      .print-btn{position:fixed;top:10px;right:10px;padding:8px 14px;background:#2563eb;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:13px}
+      @media print{ .print-btn{display:none} }
+    </style></head>
+    <body>
+      <button class="print-btn" onclick="window.print()">🖨️ Print</button>
+      <h1>Project Report</h1>
+      <div class="meta">${officeLabel} — generated ${generatedAt}</div>
+      <div class="filters">
+        <b>Report Type:</b> ${ptypeLabel} &nbsp;|&nbsp;
+        <b>District:</b> ${districtLabel} &nbsp;|&nbsp;
+        <b>Nature:</b> ${natureLabel} &nbsp;|&nbsp;
+        <b>Status:</b> ${statusLabel} &nbsp;|&nbsp;
+        <b>Total:</b> ${rows.length} project${rows.length===1?'':'s'}
+      </div>
+      ${rows.length?rows.map(projectDetailBlockHTML).join(''):'<p>No projects match the selected filters.</p>'}
+    </body></html>`);
+  win.document.close();
+}
 function reportFilterBarHTML(){
   const districts=[...new Set(reportAllRows().map(p=>p._district).filter(Boolean))].sort();
   const pts=gPT();
@@ -975,6 +1068,9 @@ function reportFilterBarHTML(){
         <option value="Pending">Pending</option>
       </select>
     </div>
+  </div>
+  <div style="display:flex;justify-content:flex-end;margin-bottom:14px">
+    <button class="btn btn-out" onclick="printReport()">🖨️ Print Report</button>
   </div>`;
 }
 
@@ -1374,6 +1470,52 @@ const PROJ_LABELS={ncb:{label:'NCB',icon:'📋',get:gNCB,set:sNCB},sq:{label:'Se
 
 const NEPAL_DISTRICTS=['Achham','Arghakhanchi','Baglung','Baitadi','Bajhang','Bajura','Banke','Bara','Bardiya','Bhaktapur','Bhojpur','Chitwan','Dadeldhura','Dailekh','Dang','Darchula','Dhading','Dhankuta','Dhanusha','Dolakha','Dolpa','Doti','Gorkha','Gulmi','Humla','Ilam','Jajarkot','Jhapa','Jumla','Kailali','Kalikot','Kanchanpur','Kapilvastu','Kaski','Kathmandu','Kavrepalanchok','Khotang','Lalitpur','Lamjung','Mahottari','Makwanpur','Manang','Morang','Mugu','Musikot','Myagdi','Nawalparasi (East)','Nawalparasi (West)','Nuwakot','Okhaldhunga','Palpa','Panchthar','Parbat','Parsa','Pyuthan','Ramechhap','Rasuwa','Rautahat','Rolpa','Rukum (East)','Rukum (West)','Rupandehi','Salyan','Sankhuwasabha','Saptari','Sarlahi','Sindhuli','Sindhupalchok','Siraha','Solukhumbu','Sunsari','Surkhet','Syangja','Tanahun','Taplejung','Terhathum','Udayapur'];
 
+// NOTE: bank names/branches change over time (mergers, rebranding). This list is a
+// best-effort reference, not a live registry — the field stays free-text (via
+// <datalist>) so anyone can type an exact/updated name that isn't in this list yet.
+const NEPAL_BANKS=['Nepal Bank Limited','Rastriya Banijya Bank','Agricultural Development Bank','Nabil Bank','Nepal Investment Mega Bank','Standard Chartered Bank Nepal','Himalayan Bank','Nepal SBI Bank','Everest Bank','Kumari Bank','Laxmi Sunrise Bank','Citizens Bank International','Prime Commercial Bank','NIC Asia Bank','Machhapuchhre Bank','NMB Bank','Prabhu Bank','Global IME Bank','Sanima Bank','Century Commercial Bank'];
+
+// There's no public, exhaustive branch-by-district directory to embed offline, so this
+// generates a few common naming conventions as *suggestions* for the given district —
+// the branch field remains free-text so the exact real branch name can always be typed.
+function branchSuggestions(district){
+  if(!district) return [];
+  return [`${district} Branch`,`${district} Main Branch`,`New Road, ${district}`,`${district} Bazar Branch`];
+}
+function updateBranchList(districtSelId,datalistId){
+  const sel=document.getElementById(districtSelId), dl=document.getElementById(datalistId);
+  if(!sel||!dl) return;
+  dl.innerHTML=branchSuggestions(sel.value).map(b=>`<option value="${b}">`).join('');
+}
+
+// English amount-in-words using the Lakh/Crore grouping conventionally used on
+// Nepali bank guarantees and cheques (not the Western million/billion grouping).
+function numberToWordsEnglish(num){
+  num=Math.round(Number(num)||0);
+  if(num===0) return 'Zero Rupees Only';
+  if(num<0) return 'Minus '+numberToWordsEnglish(-num);
+  const ones=['','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen'];
+  const tens=['','','Twenty','Thirty','Forty','Fifty','Sixty','Seventy','Eighty','Ninety'];
+  const twoDig=n=>n<20?ones[n]:tens[Math.floor(n/10)]+(n%10?' '+ones[n%10]:'');
+  const threeDig=n=>{ let s=''; if(n>=100){ s+=ones[Math.floor(n/100)]+' Hundred'; n%=100; if(n) s+=' '; } if(n>0) s+=twoDig(n); return s; };
+  let n=num;
+  const crore=Math.floor(n/10000000); n%=10000000;
+  const lakh=Math.floor(n/100000); n%=100000;
+  const thousand=Math.floor(n/1000); n%=1000;
+  const rest=n;
+  const parts=[];
+  if(crore) parts.push(threeDig(crore)+' Crore');
+  if(lakh) parts.push(threeDig(lakh)+' Lakh');
+  if(thousand) parts.push(threeDig(thousand)+' Thousand');
+  if(rest) parts.push(threeDig(rest));
+  return parts.join(' ')+' Rupees Only';
+}
+function updateAmountWords(inputId,displayId){
+  const inp=document.getElementById(inputId), disp=document.getElementById(displayId);
+  if(!inp||!disp) return;
+  disp.textContent=inp.value?numberToWordsEnglish(inp.value):'';
+}
+
 // ════════════════════════════════════════════════════════
 //  OFFLINE ROMAN → DEVANAGARI PHONETIC TRANSLITERATION ENGINE
 //  (sound-based conversion, e.g. "kathmandu" -> "कठमाडु" —
@@ -1558,6 +1700,35 @@ function wireNCBTransliteration(){
   }
 }
 
+function guaranteeBlockHTML(prefix,title,p={}){
+  const dVal=p[prefix+'District']||'';
+  return `<div class="form-section">${title}</div>
+    <div class="fg"><label>Issue Bank</label>
+      <input list="nepal-banks-list" id="${prefix}Bank" value="${p[prefix+'Bank']||''}" placeholder="Start typing a bank name...">
+    </div>
+    <div class="grid2">
+      <div class="fg"><label>District</label>
+        <select id="${prefix}District" onchange="updateBranchList('${prefix}District','${prefix}BranchList')">
+          <option value="">— Select —</option>
+          ${NEPAL_DISTRICTS.map(d=>`<option value="${d}" ${dVal===d?'selected':''}>${d}</option>`).join('')}
+        </select>
+      </div>
+      <div class="fg"><label>Branch</label>
+        <input list="${prefix}BranchList" id="${prefix}Branch" value="${p[prefix+'Branch']||''}" placeholder="Select district, or type branch name">
+        <datalist id="${prefix}BranchList">${branchSuggestions(dVal).map(b=>`<option value="${b}">`).join('')}</datalist>
+      </div>
+    </div>
+    <div class="grid2">
+      <div class="fg"><label>Guarantee Number</label><input id="${prefix}GuaranteeNo" value="${p[prefix+'GuaranteeNo']||''}" placeholder="Guarantee no."></div>
+      <div class="fg"><label>Guarantee Amount (NPR)</label><input type="number" id="${prefix}Amount" value="${p[prefix+'Amount']||''}" placeholder="0" oninput="updateAmountWords('${prefix}Amount','${prefix}AmountWords')"></div>
+    </div>
+    <div id="${prefix}AmountWords" style="font-size:11px;color:var(--text2);font-style:italic;margin:-8px 0 12px">${p[prefix+'Amount']?numberToWordsEnglish(p[prefix+'Amount']):''}</div>
+    <div class="grid2">
+      <div class="fg"><label>Issue Date</label><input type="date" id="${prefix}IssueDate" value="${p[prefix+'IssueDate']||''}"></div>
+      <div class="fg"><label>Expire Date</label><input type="date" id="${prefix}ExpireDate" value="${p[prefix+'ExpireDate']||''}"></div>
+    </div>`;
+}
+
 function selectWithCustomHTML(selectId,inputId,options,currentVal,customPlaceholder,inputId2,customPlaceholder2){
   // options: array of {value,label}
   const inList=options.some(o=>o.value===currentVal);
@@ -1719,6 +1890,10 @@ function openAddProject(ptype){
       <div class="fg"><label>Proprietor's Phone Number</label><input id="pj-proprietorPhone" placeholder="98XXXXXXXX"></div>
       <div class="fg"><label>Email Address</label><input type="email" id="pj-email" placeholder="name@example.com"></div>
 
+      <datalist id="nepal-banks-list">${NEPAL_BANKS.map(b=>`<option value="${b}">`).join('')}</datalist>
+      ${guaranteeBlockHTML('pg','Performance Bank Guarantee')}
+      ${guaranteeBlockHTML('apg','Advance Payment Guarantee')}
+
       <div class="form-section">Timeline &amp; Progress</div>
       <div class="grid2">
         <div class="fg"><label>Agreement Date</label><input type="date" id="pj-contractDate"></div>
@@ -1856,6 +2031,10 @@ function openEditProject(ptype,id){
       <div class="fg"><label>Proprietor's Phone Number</label><input id="pj-proprietorPhone" value="${p.proprietorPhone||''}"></div>
       <div class="fg"><label>Email Address</label><input type="email" id="pj-email" value="${p.email||''}"></div>
 
+      <datalist id="nepal-banks-list">${NEPAL_BANKS.map(b=>`<option value="${b}">`).join('')}</datalist>
+      ${guaranteeBlockHTML('pg','Performance Bank Guarantee',p)}
+      ${guaranteeBlockHTML('apg','Advance Payment Guarantee',p)}
+
       <div class="form-section">Timeline &amp; Progress</div>
       <div class="grid2">
         <div class="fg"><label>Agreement Date</label><input type="date" id="pj-contractDate" value="${p.contractDate||''}"></div>
@@ -1951,6 +2130,12 @@ function saveProject(ptype,editId){
       proprietorName:v('pj-proprietorName'), proprietorNameNp:v('pj-proprietorNameNp'),
       proprietorPhone:v('pj-proprietorPhone'),
       email:v('pj-email'),
+      pgBank:v('pgBank'), pgDistrict:v('pgDistrict'), pgBranch:v('pgBranch'),
+      pgGuaranteeNo:v('pgGuaranteeNo'), pgIssueDate:v('pgIssueDate'), pgExpireDate:v('pgExpireDate'),
+      pgAmount:parseFloat(v('pgAmount'))||0,
+      apgBank:v('apgBank'), apgDistrict:v('apgDistrict'), apgBranch:v('apgBranch'),
+      apgGuaranteeNo:v('apgGuaranteeNo'), apgIssueDate:v('apgIssueDate'), apgExpireDate:v('apgExpireDate'),
+      apgAmount:parseFloat(v('apgAmount'))||0,
       contractDate:v('pj-contractDate'), deadline:v('pj-deadline'),
       progress:(parseFloat(v('pj-progress'))||0)/100,
       officer:v('pj-officer'), officerNp:v('pj-officerNp'),
