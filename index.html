@@ -102,6 +102,8 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .otp-hint{font-size:11px;color:var(--text3);margin-bottom:10px;padding:8px;background:rgba(37,99,235,.08);border-radius:6px;font-family:'DM Mono',monospace}
 .link-btn{background:none;border:none;color:var(--primary);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;padding:0;text-decoration:underline}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.report-filter-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+@media(max-width:640px){.report-filter-grid{grid-template-columns:1fr 1fr}}
 
 /* ─── APP SHELL ─── */
 #app{height:100vh;display:none;flex-direction:column}
@@ -873,6 +875,109 @@ function closeSidebar(){ document.getElementById('sidebar').classList.remove('op
 // ════════════════════════════════════════════════════════
 //  DASHBOARD
 // ════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════════════
+//  REPORTS (dashboard filterable report section)
+// ════════════════════════════════════════════════════════
+function reportAllRows(){
+  const offices=gO();
+  const withMeta=(arr,ptypeKey)=>filterByOffice(arr).map(p=>{
+    const office=offices.find(o=>o.id===p.officeId);
+    return {
+      ...p,
+      _ptype:ptypeKey,
+      _district:p.district||office?.district||'',
+      _typeName:gPT().find(pt=>pt.id===p.type)?.name||'—',
+      _officeName:office?office.name:'—',
+    };
+  });
+  return [...withMeta(gNCB(),'ncb'),...withMeta(gSQ(),'sq'),...withMeta(gCC(),'cc')];
+}
+function reportFilteredRows(){
+  const ptypeF=document.getElementById('rpt-ptype')?.value||'all';
+  const districtF=document.getElementById('rpt-district')?.value||'all';
+  const natureF=document.getElementById('rpt-nature')?.value||'all';
+  const statusF=document.getElementById('rpt-status')?.value||'all';
+  return reportAllRows().filter(p=>
+    (ptypeF==='all'||p._ptype===ptypeF) &&
+    (districtF==='all'||p._district===districtF) &&
+    (natureF==='all'||p.type===natureF) &&
+    (statusF==='all'||p.status===statusF)
+  );
+}
+function reportSummaryHTML(rows){
+  const running=rows.filter(p=>p.status==='Running').length;
+  const complete=rows.filter(p=>p.status==='Complete').length;
+  const pending=rows.filter(p=>p.status==='Pending').length;
+  return `<div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:12px;font-size:12px;color:var(--text2)">
+    <span><strong style="color:var(--text)">${rows.length}</strong> total</span>
+    <span>🔄 <strong style="color:var(--text)">${running}</strong> running</span>
+    <span>✅ <strong style="color:var(--text)">${complete}</strong> completed</span>
+    <span>⏳ <strong style="color:var(--text)">${pending}</strong> pending</span>
+  </div>`;
+}
+function reportTableHTML(rows){
+  const isSA=CU.role==='superadmin';
+  if(!rows.length) return `${reportSummaryHTML(rows)}<div class="empty-state" style="padding:30px 0"><div class="es-icon">📭</div><div>No projects match these filters</div></div>`;
+  return `${reportSummaryHTML(rows)}<div class="tbl-wrap"><table>
+    <tr>
+      <th>Project Name</th><th>Report Type</th><th>District</th><th>Nature</th>
+      ${isSA?'<th>Office</th>':''}<th>Status</th><th>Progress</th>
+    </tr>
+    ${rows.map(p=>`<tr>
+      <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.name}</td>
+      <td><span class="tag tag-purple">${PROJ_LABELS[p._ptype].label}</span></td>
+      <td>${p._district||'—'}</td>
+      <td>${p._typeName}</td>
+      ${isSA?`<td>${p._officeName}</td>`:''}
+      <td>${statusTag(p.status)}</td>
+      <td>
+        <div style="display:flex;align-items:center;gap:6px">
+          <div class="prog-bar-bg" style="flex:1;min-width:60px"><div class="prog-bar-fill" style="width:${Math.round((p.progress||0)*100)}%;background:${p.progress>=1?'var(--green)':p.progress>=0.5?'var(--primary)':'var(--accent4)'}"></div></div>
+          <span style="font-size:11px;color:var(--text2);font-family:'DM Mono',monospace">${pct(p.progress)}</span>
+        </div>
+      </td>
+    </tr>`).join('')}
+  </table></div>`;
+}
+function updateReport(){
+  const el=document.getElementById('report-results');
+  if(el) el.innerHTML=reportTableHTML(reportFilteredRows());
+}
+function reportFilterBarHTML(){
+  const districts=[...new Set(reportAllRows().map(p=>p._district).filter(Boolean))].sort();
+  const pts=gPT();
+  return `<div class="report-filter-grid">
+    <div class="fg" style="margin-bottom:0"><label>Report Type</label>
+      <select id="rpt-ptype" onchange="updateReport()">
+        <option value="all">All</option>
+        <option value="ncb">NCB</option>
+        <option value="sq">Sealed Quotation</option>
+        <option value="cc">Consumer Committee</option>
+      </select>
+    </div>
+    <div class="fg" style="margin-bottom:0"><label>District</label>
+      <select id="rpt-district" onchange="updateReport()">
+        <option value="all">All</option>
+        ${districts.map(d=>`<option value="${d}">${d}</option>`).join('')}
+      </select>
+    </div>
+    <div class="fg" style="margin-bottom:0"><label>Project Nature</label>
+      <select id="rpt-nature" onchange="updateReport()">
+        <option value="all">All</option>
+        ${pts.map(pt=>`<option value="${pt.id}">${pt.name}</option>`).join('')}
+      </select>
+    </div>
+    <div class="fg" style="margin-bottom:0"><label>Status</label>
+      <select id="rpt-status" onchange="updateReport()">
+        <option value="all">All</option>
+        <option value="Running">Running</option>
+        <option value="Complete">Completed</option>
+        <option value="Pending">Pending</option>
+      </select>
+    </div>
+  </div>`;
+}
+
 function renderDashboard(){
   const allNCB=filterByOffice(gNCB()), allSQ=filterByOffice(gSQ()), allCC=filterByOffice(gCC());
   const allEmp=filterByOffice(gEmp()), offices=gO(), users=gU();
@@ -931,8 +1036,15 @@ function renderDashboard(){
     </div>`;
   }
 
+  // Reports section
+  const reportsHtml=`<div class="card">
+    <div class="card-title">📊 Reports</div>
+    ${reportFilterBarHTML()}
+    <div id="report-results">${reportTableHTML(reportFilteredRows())}</div>
+  </div>`;
+
   return `<div class="page-header"><div><div class="page-title">${t('dashboard')}</div><div class="page-sub">${CU.role==='superadmin'?t('org'):(myOffice()?.name||'')}</div></div></div>
-    ${cards}${recentHtml}${officeSel}`;
+    ${cards}${recentHtml}${reportsHtml}${officeSel}`;
 }
 
 // ════════════════════════════════════════════════════════
@@ -1262,6 +1374,190 @@ const PROJ_LABELS={ncb:{label:'NCB',icon:'📋',get:gNCB,set:sNCB},sq:{label:'Se
 
 const NEPAL_DISTRICTS=['Achham','Arghakhanchi','Baglung','Baitadi','Bajhang','Bajura','Banke','Bara','Bardiya','Bhaktapur','Bhojpur','Chitwan','Dadeldhura','Dailekh','Dang','Darchula','Dhading','Dhankuta','Dhanusha','Dolakha','Dolpa','Doti','Gorkha','Gulmi','Humla','Ilam','Jajarkot','Jhapa','Jumla','Kailali','Kalikot','Kanchanpur','Kapilvastu','Kaski','Kathmandu','Kavrepalanchok','Khotang','Lalitpur','Lamjung','Mahottari','Makwanpur','Manang','Morang','Mugu','Musikot','Myagdi','Nawalparasi (East)','Nawalparasi (West)','Nuwakot','Okhaldhunga','Palpa','Panchthar','Parbat','Parsa','Pyuthan','Ramechhap','Rasuwa','Rautahat','Rolpa','Rukum (East)','Rukum (West)','Rupandehi','Salyan','Sankhuwasabha','Saptari','Sarlahi','Sindhuli','Sindhupalchok','Siraha','Solukhumbu','Sunsari','Surkhet','Syangja','Tanahun','Taplejung','Terhathum','Udayapur'];
 
+// ════════════════════════════════════════════════════════
+//  OFFLINE ROMAN → DEVANAGARI PHONETIC TRANSLITERATION ENGINE
+//  (sound-based conversion, e.g. "kathmandu" -> "कठमाडु" —
+//   NOT a meaning-based translator; that would need a live API)
+// ════════════════════════════════════════════════════════
+const NT_VOWELS=[['aa','आ'],['ee','ई'],['oo','ऊ'],['ai','ऐ'],['au','औ'],['a','अ'],['i','इ'],['u','उ'],['e','ए'],['o','ओ']];
+const NT_MATRAS={aa:'ा',ee:'ी',oo:'ू',ai:'ै',au:'ौ',i:'ि',u:'ु',e:'े',o:'ो',a:''};
+const NT_CONSONANTS=[
+  ['ksh','क्ष'],['gya','ज्ञ'],['jny','ज्ञ'],['chh','छ'],
+  ['kh','ख'],['gh','घ'],['ng','ङ'],['ch','च'],['jh','झ'],['ny','ञ'],
+  ['th','थ'],['dh','ध'],['ph','फ'],['bh','भ'],['sh','श'],
+  ['k','क'],['g','ग'],['c','च'],['j','ज'],['t','त'],['d','द'],['n','न'],
+  ['p','प'],['b','ब'],['m','म'],['y','य'],['r','र'],['l','ल'],
+  ['v','व'],['w','व'],['s','स'],['h','ह'],['f','फ'],['z','ज'],
+  ['x','क्स'],['q','क'],
+];
+function ntTransliterateWord(word){
+  let i=0,out='',n=word.length;
+  while(i<n){
+    let matched=false;
+    // Try a standalone vowel first (word start, or right after any completed syllable)
+    for(const [rom,dev] of NT_VOWELS){
+      if(word.substr(i,rom.length).toLowerCase()===rom){ out+=dev; i+=rom.length; matched=true; break; }
+    }
+    if(matched) continue;
+    // Try a consonant, then greedily absorb any vowel matra that follows it
+    for(const [rom,dev] of NT_CONSONANTS){
+      if(word.substr(i,rom.length).toLowerCase()===rom){
+        out+=dev; i+=rom.length;
+        let matraMatched=false;
+        for(const [vrom] of NT_VOWELS){
+          if(word.substr(i,vrom.length).toLowerCase()===vrom){ out+=NT_MATRAS[vrom]; i+=vrom.length; matraMatched=true; break; }
+        }
+        if(!matraMatched && i<n) out+='्'; // halant — chains into next consonant (conjunct)
+        matched=true; break;
+      }
+    }
+    if(matched) continue;
+    out+=word[i]; i++; // pass through digits/punctuation/unknown chars unchanged
+  }
+  return out;
+}
+// Common government/infrastructure vocabulary, personal names, surnames, and district
+// names — checked FIRST (exact word/phrase match) since these have fixed conventional
+// Nepali spellings that pure sound-based guessing gets wrong (e.g. "ram" phonetically
+// gives "रम" not the correct "राम"; "construction" is a real word, not a sound to guess).
+const NT_DICTIONARY={
+  // infrastructure / project vocabulary
+  'road':'सडक','roads':'सडकहरू','bridge':'पुल','building':'भवन','buildings':'भवनहरू',
+  'school':'विद्यालय','hospital':'अस्पताल','health post':'स्वास्थ्य चौकी',
+  'water supply':'खानेपानी','drinking water':'खानेपानी','irrigation':'सिंचाइ',
+  'electricity':'विद्युत','electrification':'विद्युतीकरण','drainage':'ढल','sewerage':'ढल निकास',
+  'construction':'निर्माण','reconstruction':'पुनर्निर्माण','rehabilitation':'पुनर्स्थापना',
+  'maintenance':'मर्मत','upgrading':'स्तरोन्नति','improvement':'सुधार','development':'विकास',
+  'project':'परियोजना','committee':'समिति','consumer committee':'उपभोक्ता समिति',
+  'ward':'वडा','municipality':'नगरपालिका','rural municipality':'गाउँपालिका',
+  'district':'जिल्ला','office':'कार्यालय','department':'विभाग','ministry':'मन्त्रालय',
+  'government':'सरकार','community':'समुदाय','playground':'खेलमैदान','park':'पार्क',
+  'market':'बजार','hall':'हल','community hall':'सामुदायिक भवन','temple':'मन्दिर',
+  'sanitation':'सरसफाइ','toilet':'शौचालय','canal':'नहर','dam':'बाँध',
+  'embankment':'तटबन्ध','protection wall':'सुरक्षा पर्खाल','retaining wall':'धरौट पर्खाल',
+  'culvert':'कल्भर्ट','pipe':'पाइप','tank':'ट्याङ्की','reservoir':'जलाशय',
+  'trail':'पदमार्ग','trekking route':'पदमार्ग','bus park':'बसपार्क','parking':'पार्किङ',
+  'footpath':'पैदल मार्ग','pavement':'फुटपाथ','streetlight':'सडक बत्ती',
+  'contractor':'ठेकेदार','proprietor':'मालिक','authority':'अधिकारी','approving':'स्वीकृत',
+  'agreement':'सम्झौता','contract':'ठेक्का','completion':'सम्पन्न','progress':'प्रगति',
+  'status':'स्थिति','running':'चालु','complete':'सम्पन्न','pending':'विचाराधीन',
+  'remarks':'टिप्पणी','private':'निजी','limited':'लिमिटेड','pvt':'प्रा','ltd':'लि',
+  'company':'कम्पनी','firm':'फर्म','group':'समूह','association':'संघ','cooperative':'सहकारी',
+  'engineer':'इन्जिनियर','sub-engineer':'उप-इन्जिनियर','chief':'प्रमुख','division':'डिभिजन',
+  // common given names (traditional spellings, not phonetic guesses)
+  'ram':'राम','shyam':'श्याम','hari':'हरि','krishna':'कृष्ण','gopal':'गोपाल',
+  'bishnu':'विष्णु','ganesh':'गणेश','laxmi':'लक्ष्मी','maya':'माया','sita':'सीता',
+  'gita':'गीता','rita':'रीता','anita':'अनिता','sunita':'सुनिता','sarita':'सरिता',
+  'kavita':'कविता','radha':'राधा','devi':'देवी','kumari':'कुमारी','kumar':'कुमार',
+  'bahadur':'बहादुर','prasad':'प्रसाद','bikram':'विक्रम','bir':'वीर','surya':'सूर्य',
+  'chandra':'चन्द्र','narayan':'नारायण','bhim':'भीम','arjun':'अर्जुन','nabin':'नवीन',
+  'sunil':'सुनील','rajesh':'राजेश','rajendra':'राजेन्द्र','dipak':'दीपक','dipendra':'दीपेन्द्र',
+  'sagar':'सागर','sabin':'सबिन','suman':'सुमन','binod':'विनोद','bimal':'बिमल',
+  'kiran':'किरण','mina':'मीना','nirmala':'निर्मला','sabina':'सबिना','pratima':'प्रतिमा',
+  'sushila':'सुशीला','bimala':'बिमला','kamala':'कमला','govinda':'गोविन्द','ramesh':'रमेश',
+  'suresh':'सुरेश','mahesh':'महेश','umesh':'उमेश','naresh':'नरेश','dinesh':'दिनेश',
+  'madhav':'माधव','kedar':'केदार','keshab':'केशब','man':'मान','dhan':'धन','bal':'बल',
+  // common surnames
+  'sharma':'शर्मा','bista':'बिष्ट','thapa':'थापा','gurung':'गुरुङ','rai':'राई',
+  'limbu':'लिम्बू','tamang':'तामाङ','shrestha':'श्रेष्ठ','joshi':'जोशी',
+  'poudel':'पौडेल','paudel':'पौडेल','khadka':'खड्का','karki':'कार्की','basnet':'बस्नेत',
+  'adhikari':'अधिकारी','devkota':'देवकोटा','bhattarai':'भट्टराई','acharya':'आचार्य',
+  'regmi':'रेग्मी','dahal':'दाहाल','oli':'ओली','koirala':'कोइराला','nepal':'नेपाल',
+  'chhetri':'क्षेत्री','magar':'मगर','lama':'लामा','yadav':'यादव','mahato':'महतो',
+  'sah':'साह','singh':'सिंह','pandey':'पाण्डे','upadhyay':'उपाध्याय','dhakal':'ढकाल',
+  'ghimire':'घिमिरे','neupane':'न्यौपाने','kandel':'कँडेल','subedi':'सुवेदी',
+  'tiwari':'तिवारी','bhandari':'भण्डारी','sapkota':'सापकोटा','rijal':'रिजाल',
+  'baral':'बराल','timalsina':'तिमल्सिना','pokharel':'पोखरेल','bhusal':'भुसाल','mishra':'मिश्र',
+  // district names (standard conventional spellings)
+  'achham':'अछाम','arghakhanchi':'अर्घाखाँची','baglung':'बागलुङ','baitadi':'बैतडी',
+  'bajhang':'बझाङ','bajura':'बाजुरा','banke':'बाँके','bara':'बारा','bardiya':'बर्दिया',
+  'bhaktapur':'भक्तपुर','bhojpur':'भोजपुर','chitwan':'चितवन','dadeldhura':'डडेल्धुरा',
+  'dailekh':'दैलेख','dang':'दाङ','darchula':'दार्चुला','dhading':'धादिङ',
+  'dhankuta':'धनकुटा','dhanusha':'धनुषा','dolakha':'दोलखा','dolpa':'डोल्पा','doti':'डोटी',
+  'gorkha':'गोरखा','gulmi':'गुल्मी','humla':'हुम्ला','ilam':'इलाम','jajarkot':'जाजरकोट',
+  'jhapa':'झापा','jumla':'जुम्ला','kailali':'कैलाली','kalikot':'कालिकोट',
+  'kanchanpur':'कञ्चनपुर','kapilvastu':'कपिलवस्तु','kaski':'कास्की','kathmandu':'काठमाडौं',
+  'kavrepalanchok':'काभ्रेपलाञ्चोक','khotang':'खोटाङ','lalitpur':'ललितपुर','lamjung':'लमजुङ',
+  'mahottari':'महोत्तरी','makwanpur':'मकवानपुर','manang':'मनाङ','morang':'मोरङ','mugu':'मुगु',
+  'myagdi':'म्याग्दी','nawalparasi east':'नवलपरासी (पूर्व)','nawalparasi west':'नवलपरासी (पश्चिम)',
+  'nuwakot':'नुवाकोट','okhaldhunga':'ओखलढुंगा','palpa':'पाल्पा','panchthar':'पाँचथर',
+  'parbat':'पर्वत','parsa':'पर्सा','pyuthan':'प्युठान','ramechhap':'रामेछाप','rasuwa':'रसुवा',
+  'rautahat':'रौतहट','rolpa':'रोल्पा','rukum east':'रुकुम (पूर्व)','rukum west':'रुकुम (पश्चिम)',
+  'rupandehi':'रुपन्देही','salyan':'सल्यान','sankhuwasabha':'सङ्खुवासभा','saptari':'सप्तरी',
+  'sarlahi':'सर्लाही','sindhuli':'सिन्धुली','sindhupalchok':'सिन्धुपाल्चोक','siraha':'सिरहा',
+  'solukhumbu':'सोलुखुम्बु','sunsari':'सुनसरी','surkhet':'सुर्खेत','syangja':'स्याङ्जा',
+  'tanahun':'तनहुँ','taplejung':'ताप्लेजुङ','terhathum':'तेह्रथुम','udayapur':'उदयपुर',
+};
+function transliterateToNepali(text){
+  if(!text) return '';
+  const tokens=text.match(/[A-Za-z]+|[^A-Za-z]+/g)||[];
+  const wordIdx=[]; tokens.forEach((tok,i)=>{ if(/[A-Za-z]/.test(tok)) wordIdx.push(i); });
+  const out=tokens.slice();
+  let wi=0;
+  while(wi<wordIdx.length){
+    let matchedSpan=0, matchedVal=null;
+    for(let span=Math.min(4,wordIdx.length-wi);span>=1;span--){
+      const idxs=wordIdx.slice(wi,wi+span);
+      const phrase=idxs.map(i=>tokens[i]).join(' ').toLowerCase();
+      if(NT_DICTIONARY[phrase]){ matchedSpan=span; matchedVal=NT_DICTIONARY[phrase]; break; }
+    }
+    if(matchedVal){
+      const first=wordIdx[wi], last=wordIdx[wi+matchedSpan-1];
+      out[first]=matchedVal;
+      for(let k=first+1;k<=last;k++) out[k]='';
+      // avoid a doubled ")" when the dictionary value already closes its own bracket
+      if(matchedVal.trim().endsWith(')') && out[last+1] && /^\s*\)/.test(out[last+1])){
+        out[last+1]=out[last+1].replace(/^(\s*)\)/,'$1');
+      }
+      wi+=matchedSpan;
+    } else {
+      const idx=wordIdx[wi];
+      out[idx]=ntTransliterateWord(tokens[idx]);
+      wi+=1;
+    }
+  }
+  return out.join('');
+}
+// Auto-fills a Nepali field from its English sibling, unless the person has already
+// typed into the Nepali field themselves (tracked via a data-attribute "dirty" flag).
+function ntAuto(srcEl,targetId){
+  const target=document.getElementById(targetId);
+  if(!target || target.dataset.userEdited==='1') return;
+  target.value=transliterateToNepali(srcEl.value);
+}
+function ntMarkEdited(el){ el.dataset.userEdited='1'; }
+// Wires live transliteration listeners for the NCB form. Called right after the
+// Add/Edit Project modal is rendered so the target elements already exist in the DOM.
+function wireNCBTransliteration(){
+  const pairs=[
+    ['pj-name','pj-nameNp'],
+    ['pj-contractorName','pj-contractorNameNp'],
+    ['pj-proprietorName','pj-proprietorNameNp'],
+    ['pj-officer','pj-officerNp'],
+    ['pj-remarks','pj-remarksNp'],
+  ];
+  pairs.forEach(([srcId,targetId])=>{
+    const src=document.getElementById(srcId), target=document.getElementById(targetId);
+    if(!src||!target) return;
+    if(target.value && target.value.trim()) target.dataset.userEdited='1'; // don't clobber existing saved Nepali text
+    src.addEventListener('input',()=>ntAuto(src,targetId));
+    target.addEventListener('input',()=>ntMarkEdited(target));
+  });
+  // District has two possible English sources: the standard dropdown, or the
+  // free-text "Other" box that appears when a custom district is typed.
+  const distSel=document.getElementById('pj-district');
+  const distCustom=document.getElementById('pj-district-custom');
+  const distNp=document.getElementById('pj-districtNp');
+  if(distNp){
+    if(distNp.value && distNp.value.trim()) distNp.dataset.userEdited='1';
+    if(distSel) distSel.addEventListener('change',()=>{
+      if(distSel.value && distSel.value!=='__custom__') ntAuto({value:distSel.options[distSel.selectedIndex].text},'pj-districtNp');
+    });
+    if(distCustom) distCustom.addEventListener('input',()=>ntAuto(distCustom,'pj-districtNp'));
+    distNp.addEventListener('input',()=>ntMarkEdited(distNp));
+  }
+}
+
 function selectWithCustomHTML(selectId,inputId,options,currentVal,customPlaceholder,inputId2,customPlaceholder2){
   // options: array of {value,label}
   const inList=options.some(o=>o.value===currentVal);
@@ -1454,6 +1750,7 @@ function openAddProject(ptype){
         <button class="btn btn-pr" onclick="saveProject('${ptype}',null)">${t('save')}</button>
       </div>`);
     window._uploadedFiles={};
+    wireNCBTransliteration();
     return;
   }
 
@@ -1583,6 +1880,7 @@ function openEditProject(ptype,id){
         <button class="btn btn-pr" onclick="saveProject('${ptype}','${id}')">${t('save')}</button>
       </div>`);
     _uploadedFiles=Object.assign({},p.files||{});
+    wireNCBTransliteration();
     return;
   }
 
