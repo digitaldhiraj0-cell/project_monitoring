@@ -349,6 +349,25 @@ tr:hover td{background:rgba(15,23,42,.035)}
 <script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-app-compat.js" onerror="window.__FB_SCRIPT_FAILED=true"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-database-compat.js" onerror="window.__FB_SCRIPT_FAILED=true"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-auth-compat.js" onerror="window.__FB_SCRIPT_FAILED=true"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js" onerror="window.__XLSX_FAILED=true"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" onerror="window.__JSPDF_FAILED=true"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js" onerror="window.__JSPDF_AT_FAILED=true"></script>
+<script>
+  // Fallback mirrors in case a primary CDN is blocked or a path 404s.
+  if(window.__XLSX_FAILED || typeof XLSX==='undefined'){
+    document.write('<scr'+'ipt src="https://unpkg.com/xlsx@0.18.5/dist/xlsx.full.min.js"></scr'+'ipt>');
+  }
+  if(window.__JSPDF_FAILED || typeof window.jspdf==='undefined'){
+    document.write('<scr'+'ipt src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></scr'+'ipt>');
+  }
+</script>
+<script>
+  // autotable must load AFTER jspdf (and after any jspdf fallback above), so its
+  // own fallback check runs in a separate, later inline script.
+  if(window.__JSPDF_AT_FAILED || typeof window.jspdf==='undefined' || typeof window.jspdf.jsPDF?.API?.autoTable==='undefined'){
+    document.write('<scr'+'ipt src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3/dist/jspdf.plugin.autotable.min.js"></scr'+'ipt>');
+  }
+</script>
 <script>
   // Fallback: if the primary CDN got blocked, try a mirror before the app boots.
   if(window.__FB_SCRIPT_FAILED || typeof firebase==='undefined'){
@@ -1035,6 +1054,75 @@ function updateReport(){
   const el=document.getElementById('report-results');
   if(el) el.innerHTML=reportTableHTML(reportFilteredRows());
 }
+// ════════════════════════════════════════════════════════
+//  EXCEL / PDF EXPORT (client-side, no server) — same filtered
+//  rows as the on-screen report and the Print Report view.
+// ════════════════════════════════════════════════════════
+function getExportRows(){
+  return reportFilteredRows().map(p=>({
+    'Project Name':p.name||'',
+    'Report Type':PROJ_LABELS[p._ptype]?.label||'',
+    'Nature':p._typeName||'',
+    'Office':p._officeName||'',
+    'District':p._district||'',
+    'Status':p.status||'',
+    'Activity No.':p.activityNo||'',
+    'Contract No.':p.contractNo||'',
+    'PAN':p.pan||'',
+    'Contractor':p.contractorName||'',
+    'Proprietor':p.proprietorName||'',
+    'Proprietor Phone':p.proprietorPhone||'',
+    'Email':p.email||'',
+    'Allocated Budget':p.budget||'',
+    'Cost Estimate':p.estimate||'',
+    'Agreement Date':p.contractDate||'',
+    'Completion Date':p.deadline||'',
+    'Progress':p.progress!=null?Math.round(p.progress*100)+'%':'',
+    'Approving Authority':p.officer||'',
+    'PG Bank':p.pgBank||'',
+    'PG Branch':p.pgBranch||'',
+    'PG Guarantee No.':p.pgGuaranteeNo||'',
+    'PG Issue Date':p.pgIssueDate||'',
+    'PG Expire Date':p.pgExpireDate||'',
+    'PG Amount':p.pgAmount||'',
+    'APG Bank':p.apgBank||'',
+    'APG Branch':p.apgBranch||'',
+    'APG Guarantee No.':p.apgGuaranteeNo||'',
+    'APG Issue Date':p.apgIssueDate||'',
+    'APG Expire Date':p.apgExpireDate||'',
+    'APG Amount':p.apgAmount||'',
+    'Remarks':p.remarks||'',
+  }));
+}
+function exportExcel(){
+  if(typeof XLSX==='undefined'){ toast('Excel export library failed to load — check your internet connection','var(--red)'); return; }
+  const rows=getExportRows();
+  if(!rows.length){ toast('No projects match the current filters','var(--red)'); return; }
+  const ws=XLSX.utils.json_to_sheet(rows);
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,'Report');
+  XLSX.writeFile(wb,`Project_Report_${new Date().toISOString().slice(0,10)}.xlsx`);
+}
+function exportPDF(){
+  if(typeof window.jspdf==='undefined'){ toast('PDF export library failed to load — check your internet connection','var(--red)'); return; }
+  const rows=getExportRows();
+  if(!rows.length){ toast('No projects match the current filters','var(--red)'); return; }
+  const {jsPDF}=window.jspdf;
+  const doc=new jsPDF({orientation:'landscape',unit:'pt',format:'a4'});
+  const headers=Object.keys(rows[0]);
+  const body=rows.map(r=>headers.map(h=>String(r[h]??'')));
+  doc.setFontSize(12);
+  doc.text('Project Report — FY '+CFY,30,22);
+  if(typeof doc.autoTable!=='function'){ toast('PDF table library failed to load — check your internet connection','var(--red)'); return; }
+  doc.autoTable({
+    head:[headers], body:body, startY:30,
+    styles:{fontSize:5.5,cellPadding:2,overflow:'linebreak'},
+    headStyles:{fillColor:[37,99,235],textColor:255,fontSize:6},
+    margin:{left:10,right:10},
+  });
+  doc.save(`Project_Report_${new Date().toISOString().slice(0,10)}.pdf`);
+}
+
 function projectDetailBlockHTML(p){
   const kv=(label,val)=> val ? `<div class="kv"><b>${label}</b><span>${val}</span></div>` : '';
   const hasPG=p.pgBank||p.pgAmount||p.pgGuaranteeNo;
@@ -1162,7 +1250,9 @@ function reportFilterBarHTML(){
       </select>
     </div>
   </div>
-  <div style="display:flex;justify-content:flex-end;margin-bottom:14px">
+  <div style="display:flex;justify-content:flex-end;gap:8px;margin-bottom:14px">
+    <button class="btn btn-out" onclick="exportExcel()">📊 Download Excel</button>
+    <button class="btn btn-out" onclick="exportPDF()">📄 Download PDF</button>
     <button class="btn btn-out" onclick="printReport()">🖨️ Print Report</button>
   </div>`;
 }
