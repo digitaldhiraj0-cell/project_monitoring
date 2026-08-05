@@ -1939,6 +1939,55 @@ function wireNCBTransliteration(){
   }
 }
 
+// "Consecutive" (continuing/carried-over) project extra fields — hidden unless
+// Type is set to Consecutive. Split into three blocks so each appears in its
+// natural section of the form (Financial Detail, Timeline, Payment) rather
+// than all bunched in one place.
+function consecutiveFinancialHTML(p={}){
+  const v=(k)=>p[k]!=null?p[k]:'';
+  return `<div id="consecutive-financial" style="display:none">
+    <div class="fg"><label>Budget Allocated (NPR)</label><input type="number" id="pj-cBudget" value="${v('cBudget')}" placeholder="0"></div>
+    <div class="grid2">
+      <div class="fg"><label>Estimate Amount without VAT (NPR)</label><input type="number" id="pj-cEstNoVAT" value="${v('cEstNoVAT')}" placeholder="0"></div>
+      <div class="fg"><label>Estimate Amount with VAT &amp; PS (NPR)</label><input type="number" id="pj-cEstWithVATPS" value="${v('cEstWithVATPS')}" placeholder="0"></div>
+    </div>
+    <div class="grid2">
+      <div class="fg"><label>Agreement Amount without VAT (NPR)</label><input type="number" id="pj-cAgreementNoVAT" value="${v('cAgreementNoVAT')}" placeholder="0"></div>
+      <div class="fg"><label>Agreement Amount with VAT &amp; PS (NPR)</label><input type="number" id="pj-cAgreementWithVATPS" value="${v('cAgreementWithVATPS')}" placeholder="0"></div>
+    </div>
+  </div>`;
+}
+function consecutiveExtensionHTML(p={}){
+  return `<div id="consecutive-extension" style="display:none">
+    <div class="fg"><label>Contract Extension Date</label><input type="date" id="pj-extensionDate" value="${p.extensionDate||''}"></div>
+  </div>`;
+}
+function consecutivePaymentHTML(p={}){
+  const v=(k)=>p[k]!=null?p[k]:'';
+  return `<div id="consecutive-payment" style="display:none">
+    <div class="form-section">Payment</div>
+    <div class="grid2">
+      <div class="fg"><label>Contract Amount (NPR)</label><input type="number" id="pj-cContractAmt" value="${v('cContractAmt')}" placeholder="0" oninput="updateRemainingPayment()"></div>
+      <div class="fg"><label>Paid Amount (NPR)</label><input type="number" id="pj-cPaidAmt" value="${v('cPaidAmt')}" placeholder="0" oninput="updateRemainingPayment()"></div>
+    </div>
+    <div class="fg"><label>Remaining Payment Amount (NPR)</label><input type="text" id="pj-cRemainingAmt" value="${fmt((p.cContractAmt||0)-(p.cPaidAmt||0))}" disabled style="opacity:.75;font-weight:600"></div>
+  </div>`;
+}
+function toggleProjType(){
+  const sel=document.getElementById('pj-projType');
+  const isConsecutive=sel?.value==='Consecutive';
+  ['consecutive-financial','consecutive-extension','consecutive-payment'].forEach(id=>{
+    const box=document.getElementById(id);
+    if(box) box.style.display=isConsecutive?'block':'none';
+  });
+}
+function updateRemainingPayment(){
+  const c=parseFloat(document.getElementById('pj-cContractAmt')?.value)||0;
+  const p=parseFloat(document.getElementById('pj-cPaidAmt')?.value)||0;
+  const out=document.getElementById('pj-cRemainingAmt');
+  if(out) out.value = fmt(c-p);
+}
+
 function guaranteeBlockHTML(prefix,title,p={}){
   const dVal=p[prefix+'District']||'';
   return `<div class="form-section">${title}</div>
@@ -2140,7 +2189,15 @@ function openAddProject(ptype){
         <div class="fg"><label>Project Name (English)</label><input id="pj-name" placeholder="Project name"></div>
         <div class="fg"><label>Project Name (Nepali)</label><input id="pj-nameNp" placeholder="परियोजनाको नाम"></div>
       </div>
-      <div class="fg"><label>Activity Number</label><input id="pj-activityNo" placeholder="ACT-001"></div>
+      <div class="grid2">
+        <div class="fg"><label>Activity Number</label><input id="pj-activityNo" placeholder="ACT-001"></div>
+        <div class="fg"><label>Type</label>
+          <select id="pj-projType" onchange="toggleProjType()">
+            <option value="New">New</option>
+            <option value="Consecutive">Consecutive</option>
+          </select>
+        </div>
+      </div>
       <div class="fg"><label>District (English)</label>${districtFieldHTML('')}</div>
       <div class="fg"><label>District (Nepali)</label><input id="pj-districtNp" placeholder="जिल्लाको नाम (नेपालीमा)"></div>
       <div class="fg"><label>Project Type</label>${selectWithCustomHTML('pj-type','pj-type-custom',pts.map(p=>({value:p.id,label:p.nameNp?`${p.name} / ${p.nameNp}`:p.name})),'','Type new project type (English)','pj-type-customNp','Type new project type (Nepali)')}</div>
@@ -2150,6 +2207,7 @@ function openAddProject(ptype){
         <div class="fg"><label>Allocated Budget (NPR)</label><input type="number" id="pj-budget" placeholder="0"></div>
         <div class="fg"><label>Cost Estimate (NPR)</label><input type="number" id="pj-estimate" placeholder="0"></div>
       </div>
+      ${consecutiveFinancialHTML()}
 
       <div class="form-section">Contract &amp; Contractor</div>
       <div class="fg"><label>Contract Number</label><input id="pj-contractNo" placeholder="Contract no."></div>
@@ -2174,7 +2232,9 @@ function openAddProject(ptype){
         <div class="fg"><label>Agreement Date</label><input type="date" id="pj-contractDate"></div>
         <div class="fg"><label>Completion Date</label><input type="date" id="pj-deadline"></div>
       </div>
+      ${consecutiveExtensionHTML()}
       <div class="fg"><label>Progress to Date (0–100%)</label><input type="number" id="pj-progress" min="0" max="100" placeholder="0" value="0"></div>
+      ${consecutivePaymentHTML()}
 
       <div class="form-section">Authority &amp; Status</div>
       <div class="grid2">
@@ -2195,7 +2255,7 @@ function openAddProject(ptype){
         <button class="btn btn-pr" onclick="saveProject('${ptype}',null)">${t('save')}</button>
       </div>`);
     window._uploadedFiles={};
-    wireNCBTransliteration();
+    wireNCBTransliteration(); toggleProjType();
     return;
   }
 
@@ -2343,7 +2403,15 @@ function openEditProject(ptype,id){
         <div class="fg"><label>Project Name (English)</label><input id="pj-name" value="${p.name||''}"></div>
         <div class="fg"><label>Project Name (Nepali)</label><input id="pj-nameNp" value="${p.nameNp||''}"></div>
       </div>
-      <div class="fg"><label>Activity Number</label><input id="pj-activityNo" value="${p.activityNo||''}"></div>
+      <div class="grid2">
+        <div class="fg"><label>Activity Number</label><input id="pj-activityNo" value="${p.activityNo||''}"></div>
+        <div class="fg"><label>Type</label>
+          <select id="pj-projType" onchange="toggleProjType()">
+            <option value="New" ${p.projType!=='Consecutive'?'selected':''}>New</option>
+            <option value="Consecutive" ${p.projType==='Consecutive'?'selected':''}>Consecutive</option>
+          </select>
+        </div>
+      </div>
       <div class="fg"><label>District (English)</label>${districtFieldHTML(p.district||'')}</div>
       <div class="fg"><label>District (Nepali)</label><input id="pj-districtNp" value="${p.districtNp||''}" placeholder="जिल्लाको नाम (नेपालीमा)"></div>
       <div class="fg"><label>Project Type</label>${selectWithCustomHTML('pj-type','pj-type-custom',pts.map(pt=>({value:pt.id,label:pt.nameNp?`${pt.name} / ${pt.nameNp}`:pt.name})),p.type||'','Type new project type (English)','pj-type-customNp','Type new project type (Nepali)')}</div>
@@ -2353,6 +2421,7 @@ function openEditProject(ptype,id){
         <div class="fg"><label>Allocated Budget (NPR)</label><input type="number" id="pj-budget" value="${p.budget||0}"></div>
         <div class="fg"><label>Cost Estimate (NPR)</label><input type="number" id="pj-estimate" value="${p.estimate||0}"></div>
       </div>
+      ${consecutiveFinancialHTML(p)}
 
       <div class="form-section">Contract &amp; Contractor</div>
       <div class="fg"><label>Contract Number</label><input id="pj-contractNo" value="${p.contractNo||''}"></div>
@@ -2377,7 +2446,9 @@ function openEditProject(ptype,id){
         <div class="fg"><label>Agreement Date</label><input type="date" id="pj-contractDate" value="${p.contractDate||''}"></div>
         <div class="fg"><label>Completion Date</label><input type="date" id="pj-deadline" value="${p.deadline||''}"></div>
       </div>
+      ${consecutiveExtensionHTML(p)}
       <div class="fg"><label>Progress to Date (0–100%)</label><input type="number" id="pj-progress" min="0" max="100" value="${Math.round((p.progress||0)*100)}"></div>
+      ${consecutivePaymentHTML(p)}
 
       <div class="form-section">Authority &amp; Status</div>
       <div class="grid2">
@@ -2397,7 +2468,7 @@ function openEditProject(ptype,id){
         <button class="btn btn-pr" onclick="saveProject('${ptype}','${id}')">${t('save')}</button>
       </div>`);
     _uploadedFiles=Object.assign({},p.files||{});
-    wireNCBTransliteration();
+    wireNCBTransliteration(); toggleProjType();
     return;
   }
 
@@ -2462,10 +2533,19 @@ function saveProject(ptype,editId){
       fiscalYear:v('pj-fiscalYear')||CFY,
       nameNp:v('pj-nameNp'), name:v('pj-name'),
       activityNo:v('pj-activityNo'),
+      projType:v('pj-projType')||'New',
       district:getSelectOrCustom('pj-district','pj-district-custom'), districtNp:v('pj-districtNp'),
       type:resolveProjectType(typeRaw,typeRawNp),
       budget:parseFloat(v('pj-budget'))||0,
       estimate:parseFloat(v('pj-estimate'))||0,
+      cBudget:parseFloat(v('pj-cBudget'))||0,
+      cEstNoVAT:parseFloat(v('pj-cEstNoVAT'))||0,
+      cEstWithVATPS:parseFloat(v('pj-cEstWithVATPS'))||0,
+      cAgreementNoVAT:parseFloat(v('pj-cAgreementNoVAT'))||0,
+      cAgreementWithVATPS:parseFloat(v('pj-cAgreementWithVATPS'))||0,
+      extensionDate:v('pj-extensionDate'),
+      cContractAmt:parseFloat(v('pj-cContractAmt'))||0,
+      cPaidAmt:parseFloat(v('pj-cPaidAmt'))||0,
       contractNo:v('pj-contractNo'),
       contractorName:v('pj-contractorName'), contractorNameNp:v('pj-contractorNameNp'),
       pan:v('pj-pan'),
