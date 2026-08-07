@@ -42,7 +42,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 #auth-screen{
   height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
   background:linear-gradient(160deg,#eef2f7 0%,#ffffff 50%,#eef2f7 100%);
-  padding:20px;overflow-y:auto;
+  padding:clamp(10px,2.5vh,20px);overflow-y:auto;
 }
 .auth-glow{
   position:absolute;top:-100px;left:50%;transform:translateX(-50%);
@@ -51,39 +51,41 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
   pointer-events:none;
 }
 .auth-logo{
-  width:88px;height:88px;border-radius:50%;background:#fff;
+  width:clamp(52px,9vh,88px);height:clamp(52px,9vh,88px);border-radius:50%;background:#fff;
   display:flex;align-items:center;justify-content:center;
   box-shadow:0 0 0 4px rgba(37,99,235,0.15),0 0 40px rgba(37,99,235,0.12);
-  overflow:hidden;margin-bottom:14px;flex:none;
+  overflow:hidden;margin-bottom:clamp(6px,1.6vh,14px);flex:none;
 }
 .auth-logo img{width:100%;height:100%;object-fit:contain}
-.auth-org{color:var(--primary);font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;text-align:center;margin-bottom:4px}
-.auth-title{font-size:22px;font-weight:700;text-align:center;margin-bottom:3px}
-.auth-sub{font-size:12px;color:var(--text2);text-align:center;margin-bottom:28px}
+.auth-org{color:var(--primary);font-size:clamp(9px,1.4vh,11px);font-weight:600;letter-spacing:1.5px;text-transform:uppercase;text-align:center;margin-bottom:clamp(2px,0.6vh,4px)}
+.auth-title{font-size:clamp(16px,2.6vh,22px);font-weight:700;text-align:center;margin-bottom:clamp(2px,0.6vh,3px)}
+.auth-sub{font-size:clamp(10px,1.5vh,12px);color:var(--text2);text-align:center;margin-bottom:clamp(12px,3.5vh,28px)}
 .auth-card{
   background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);
-  padding:28px 24px;width:100%;max-width:380px;
+  padding:clamp(16px,3.2vh,28px) clamp(16px,3vw,24px);width:100%;max-width:380px;
   box-shadow:var(--shadow);position:relative;z-index:1;
+  max-height:calc(100vh - clamp(120px,20vh,220px));overflow-y:auto;
 }
-.auth-tabs{display:flex;gap:4px;background:var(--bg);border-radius:var(--r-sm);padding:4px;margin-bottom:20px}
+.auth-tabs{display:flex;gap:4px;background:var(--bg);border-radius:var(--r-sm);padding:4px;margin-bottom:clamp(10px,2vh,20px)}
 .auth-tab{flex:1;padding:8px;border:none;background:transparent;border-radius:6px;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;color:var(--text2);transition:all .2s}
 .auth-tab.active{background:var(--surface2);color:var(--text)}
-.fg{margin-bottom:14px}
+.fg{margin-bottom:clamp(8px,1.8vh,14px)}
 .fg label{display:block;font-size:11px;font-weight:600;color:var(--text2);margin-bottom:5px;letter-spacing:.3px;text-transform:uppercase}
 .fg input,.fg select,.fg textarea{
-  width:100%;padding:10px 13px;background:var(--bg);border:1px solid var(--border);
-  border-radius:var(--r-sm);font-size:13px;font-family:inherit;color:var(--text);outline:none;transition:border-color .2s;
+  width:100%;padding:clamp(8px,1.4vh,10px) 13px;background:var(--bg);border:1px solid var(--border);
+  border-radius:var(--r-sm);font-size:13px;font-family:inherit;color:var(--text);outline:none;transition:border-color .2s,box-shadow .2s;
 }
-.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--primary)}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
 .fg select option{background:var(--surface2)}
 .fg textarea{resize:vertical;min-height:70px}
 .btn-primary{
-  width:100%;padding:12px;background:var(--primary);color:#fff;border:none;
+  width:100%;padding:clamp(10px,1.8vh,12px);background:var(--primary);color:#fff;border:none;
   border-radius:var(--r-sm);font-size:14px;font-weight:600;font-family:inherit;
-  cursor:pointer;transition:background .2s,transform .1s;
+  cursor:pointer;transition:background .2s,transform .1s,box-shadow .2s;
+  box-shadow:0 2px 8px rgba(37,99,235,.25);
 }
 .btn-primary:active{transform:scale(.98)}
-.btn-primary:hover{background:var(--primary-d)}
+.btn-primary:hover{background:var(--primary-d);box-shadow:0 4px 14px rgba(37,99,235,.35)}
 .auth-err{background:rgba(220,38,38,.1);border:1px solid rgba(220,38,38,.3);color:var(--red);padding:9px 12px;border-radius:var(--r-sm);font-size:12px;font-weight:600;margin-bottom:12px;display:none;text-align:center}
 .auth-ok{background:rgba(21,128,61,.1);border:1px solid rgba(21,128,61,.3);color:var(--green);padding:9px 12px;border-radius:var(--r-sm);font-size:12px;font-weight:600;margin-bottom:12px;display:none;text-align:center}
 .otp-row{display:flex;gap:8px;margin-bottom:12px}
@@ -102,8 +104,13 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .otp-hint{font-size:11px;color:var(--text3);margin-bottom:10px;padding:8px;background:rgba(37,99,235,.08);border-radius:6px;font-family:'DM Mono',monospace}
 .link-btn{background:none;border:none;color:var(--primary);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;padding:0;text-decoration:underline}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.report-filter-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.report-filter-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px}
+@media(max-width:900px){.report-filter-grid{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:640px){.report-filter-grid{grid-template-columns:1fr 1fr}}
+.report-filter-grid .fg label{font-size:10.5px}
+.report-filter-grid .fg select{font-size:12.5px;padding:8px 10px}
+.btn.btn-report-action{font-size:12.5px;padding:7px 13px}
+.proj-name-cell{font-size:14.5px;font-weight:600;color:var(--text)}
 
 /* ─── APP SHELL ─── */
 #app{height:100vh;display:none;flex-direction:column}
@@ -158,7 +165,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .nav-item.active{background:var(--primary-glow);color:var(--primary);font-weight:600}
 .nav-item .ni-icon{font-size:15px;flex:none;width:20px;text-align:center}
 .nav-item .ni-badge{margin-left:auto;background:var(--primary);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px}
-.main{flex:1;overflow-y:auto;padding:16px}
+.main{flex:1;overflow-y:auto;padding:16px 16px 64px}
 
 /* ─── CARDS & SECTIONS ─── */
 .page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px}
@@ -238,12 +245,53 @@ tr:hover td{background:rgba(15,23,42,.035)}
   overflow-y:auto;padding:20px;
   animation:slideUp .25s ease;
 }
+/* ─────────────────────────────────────────────────────────────
+   DESKTOP INTERFACE TYPOGRAPHY — applies across the whole app
+   (dashboard, cards, tables, forms, everything), scoped to
+   desktop widths so phones/tablets keep the original compact,
+   touch-friendly layout untouched.
+
+   Font strategy: the font-family LIST below is a fallback chain,
+   not a single font. The browser picks the first font in the
+   list that actually has the glyphs needed for each character —
+   so English text renders in Times New Roman, and Devanagari
+   (Nepali) text automatically falls through to Kokila (or, on
+   systems without Kokila installed, Noto Sans Devanagari) without
+   needing to tag every individual field. This is standard
+   practice for bilingual interfaces.
+   ───────────────────────────────────────────────────────────── */
+@media(min-width:900px){
+  body{
+    font-family:'Times New Roman',Times,Kokila,'Noto Sans Devanagari',serif;
+    zoom:1.12; /* uniformly scales all text, spacing, and widths for legibility —
+                  supported in Chrome, Edge, Safari, and Firefox 126+; older
+                  Firefox simply ignores it and shows the app at normal size. */
+  }
+  .modal-sheet{
+    max-width:1160px; padding:36px 44px;
+  }
+  .grid2{grid-template-columns:1fr 1fr; gap:22px}
+  .fg{margin-bottom:20px}
+  .fg label{font-size:13px}
+  .fg input,.fg select,.fg textarea{font-size:16px; padding:12px 14px}
+  .modal-title{font-size:20px}
+  .form-section{font-size:12px}
+  .btn-primary,.btn{font-size:15px}
+}
+
 @keyframes slideUp{from{transform:translateY(60px);opacity:0}to{transform:translateY(0);opacity:1}}
 .modal-handle{width:36px;height:3px;background:var(--border2);border-radius:2px;margin:0 auto 16px}
 .modal-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px}
 .modal-title{font-size:16px;font-weight:700}
 .modal-close{background:var(--surface2);border:none;width:28px;height:28px;border-radius:50%;font-size:14px;cursor:pointer;color:var(--text2);display:flex;align-items:center;justify-content:center}
 .form-section{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin:16px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.proj{color:var(--text);font-size:13px}
+.proj h2{font-size:15px;margin:0 0 10px;color:var(--primary)}
+.proj .row{display:flex;flex-wrap:wrap}
+.proj .kv{width:50%;font-size:12.5px;margin-bottom:6px;display:flex;padding-right:8px}
+.proj .kv b{width:160px;color:var(--text2);flex:none;font-weight:600}
+.proj .section-label{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--text3);margin:12px 0 5px;border-bottom:1px solid var(--border);padding-bottom:3px;width:100%}
+@media(max-width:640px){.proj .kv{width:100%}}
 .theme-purple{--primary:var(--purple)}
 .theme-purple .form-section{color:var(--purple);border-bottom-color:rgba(124,58,237,.35)}
 .theme-purple .fg label{color:var(--purple)}
@@ -989,18 +1037,18 @@ function closeSidebar(){ document.getElementById('sidebar').classList.remove('op
 // ════════════════════════════════════════════════════════
 //  REPORTS (dashboard filterable report section)
 // ════════════════════════════════════════════════════════
+function attachProjMeta(p,ptypeKey){
+  const office=gO().find(o=>o.id===p.officeId);
+  return {
+    ...p,
+    _ptype:ptypeKey,
+    _district:p.district||office?.district||'',
+    _typeName:gPT().find(pt=>pt.id===p.type)?.name||'—',
+    _officeName:office?office.name:'—',
+  };
+}
 function reportAllRows(){
-  const offices=gO();
-  const withMeta=(arr,ptypeKey)=>filterByOffice(arr).map(p=>{
-    const office=offices.find(o=>o.id===p.officeId);
-    return {
-      ...p,
-      _ptype:ptypeKey,
-      _district:p.district||office?.district||'',
-      _typeName:gPT().find(pt=>pt.id===p.type)?.name||'—',
-      _officeName:office?office.name:'—',
-    };
-  });
+  const withMeta=(arr,ptypeKey)=>filterByOffice(arr).map(p=>attachProjMeta(p,ptypeKey));
   return fyFilter([...withMeta(gNCB(),'ncb'),...withMeta(gSQ(),'sq'),...withMeta(gCC(),'cc')]);
 }
 function reportFilteredRows(){
@@ -1008,11 +1056,13 @@ function reportFilteredRows(){
   const districtF=document.getElementById('rpt-district')?.value||'all';
   const natureF=document.getElementById('rpt-nature')?.value||'all';
   const statusF=document.getElementById('rpt-status')?.value||'all';
+  const progTypeF=document.getElementById('rpt-progtype')?.value||'all';
   return reportAllRows().filter(p=>
     (ptypeF==='all'||p._ptype===ptypeF) &&
     (districtF==='all'||p._district===districtF) &&
     (natureF==='all'||p.type===natureF) &&
-    (statusF==='all'||p.status===statusF)
+    (statusF==='all'||p.status===statusF) &&
+    (progTypeF==='all'||(p.projType||'New')===progTypeF)
   );
 }
 function reportSummaryHTML(rows){
@@ -1035,7 +1085,7 @@ function reportTableHTML(rows){
       ${isSA?'<th>Office</th>':''}<th>Status</th><th>Progress</th>
     </tr>
     ${rows.map(p=>`<tr>
-      <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.name}</td>
+      <td class="proj-name-cell" style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.name}</td>
       <td><span class="tag tag-purple">${PROJ_LABELS[p._ptype].label}</span></td>
       <td>${p._district||'—'}</td>
       <td>${p._typeName}</td>
@@ -1058,8 +1108,8 @@ function updateReport(){
 //  EXCEL / PDF EXPORT (client-side, no server) — same filtered
 //  rows as the on-screen report and the Print Report view.
 // ════════════════════════════════════════════════════════
-function getExportRows(){
-  return reportFilteredRows().map(p=>({
+function projToExportRow(p){
+  return {
     'Project Name':p.name||'',
     'Report Type':PROJ_LABELS[p._ptype]?.label||'',
     'Nature':p._typeName||'',
@@ -1092,27 +1142,30 @@ function getExportRows(){
     'APG Expire Date':p.apgExpireDate||'',
     'APG Amount':p.apgAmount||'',
     'Remarks':p.remarks||'',
-  }));
+  };
 }
-function exportExcel(){
+function getExportRows(){
+  return reportFilteredRows().map(projToExportRow);
+}
+function exportExcel(rowsOverride,filenameOverride){
   if(typeof XLSX==='undefined'){ toast('Excel export library failed to load — check your internet connection','var(--red)'); return; }
-  const rows=getExportRows();
+  const rows=rowsOverride||getExportRows();
   if(!rows.length){ toast('No projects match the current filters','var(--red)'); return; }
   const ws=XLSX.utils.json_to_sheet(rows);
   const wb=XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb,ws,'Report');
-  XLSX.writeFile(wb,`Project_Report_${new Date().toISOString().slice(0,10)}.xlsx`);
+  XLSX.writeFile(wb,filenameOverride||`Project_Report_${new Date().toISOString().slice(0,10)}.xlsx`);
 }
-function exportPDF(){
+function exportPDF(rowsOverride,filenameOverride,titleOverride){
   if(typeof window.jspdf==='undefined'){ toast('PDF export library failed to load — check your internet connection','var(--red)'); return; }
-  const rows=getExportRows();
+  const rows=rowsOverride||getExportRows();
   if(!rows.length){ toast('No projects match the current filters','var(--red)'); return; }
   const {jsPDF}=window.jspdf;
   const doc=new jsPDF({orientation:'landscape',unit:'pt',format:'a4'});
   const headers=Object.keys(rows[0]);
   const body=rows.map(r=>headers.map(h=>String(r[h]??'')));
   doc.setFontSize(12);
-  doc.text('Project Report — FY '+CFY,30,22);
+  doc.text(titleOverride||('Project Report — FY '+CFY),30,22);
   if(typeof doc.autoTable!=='function'){ toast('PDF table library failed to load — check your internet connection','var(--red)'); return; }
   doc.autoTable({
     head:[headers], body:body, startY:30,
@@ -1120,7 +1173,7 @@ function exportPDF(){
     headStyles:{fillColor:[37,99,235],textColor:255,fontSize:6},
     margin:{left:10,right:10},
   });
-  doc.save(`Project_Report_${new Date().toISOString().slice(0,10)}.pdf`);
+  doc.save(filenameOverride||`Project_Report_${new Date().toISOString().slice(0,10)}.pdf`);
 }
 
 function projectDetailBlockHTML(p){
@@ -1171,18 +1224,32 @@ function projectDetailBlockHTML(p){
     ${p.remarks?`<div class="section-label">Remarks</div><div style="font-size:11.5px">${p.remarks}${p.remarksNp?' / '+p.remarksNp:''}</div>`:''}
   </div>`;
 }
-function printReport(){
-  const rows=reportFilteredRows();
-  const ptypeSel=document.getElementById('rpt-ptype'), districtSel=document.getElementById('rpt-district'),
-        natureSel=document.getElementById('rpt-nature'), statusSel=document.getElementById('rpt-status');
-  const ptypeLabel=ptypeSel&&ptypeSel.value!=='all'?PROJ_LABELS[ptypeSel.value].label:'All';
-  const districtLabel=districtSel&&districtSel.value!=='all'?districtSel.value:'All';
-  const natureLabel=natureSel&&natureSel.value!=='all'?(gPT().find(pt=>pt.id===natureSel.value)?.name||'—'):'All';
-  const statusLabel=statusSel&&statusSel.value!=='all'?statusSel.value:'All';
+function printReport(rowsOverride,headerOverride){
+  const rows=rowsOverride||reportFilteredRows();
   const win=window.open('','_blank');
   if(!win){ toast('Please allow pop-ups to print the report','var(--red)'); return; }
   const generatedAt=new Date().toLocaleString();
   const officeLabel=CU.role==='superadmin'?t('org'):(myOffice()?.name||'');
+  let filtersHTML;
+  if(headerOverride){
+    filtersHTML=headerOverride;
+  } else {
+    const ptypeSel=document.getElementById('rpt-ptype'), districtSel=document.getElementById('rpt-district'),
+          natureSel=document.getElementById('rpt-nature'), statusSel=document.getElementById('rpt-status'),
+          progTypeSel=document.getElementById('rpt-progtype');
+    const ptypeLabel=ptypeSel&&ptypeSel.value!=='all'?PROJ_LABELS[ptypeSel.value].label:'All';
+    const districtLabel=districtSel&&districtSel.value!=='all'?districtSel.value:'All';
+    const natureLabel=natureSel&&natureSel.value!=='all'?(gPT().find(pt=>pt.id===natureSel.value)?.name||'—'):'All';
+    const statusLabel=statusSel&&statusSel.value!=='all'?statusSel.value:'All';
+    const progTypeLabel=progTypeSel&&progTypeSel.value!=='all'?(progTypeSel.value==='Consecutive'?'क्रमागत':'नयाँ'):'All';
+    filtersHTML=`<b>Fiscal Year:</b> ${CFY} &nbsp;|&nbsp;
+        <b>Report Type:</b> ${ptypeLabel} &nbsp;|&nbsp;
+        <b>District:</b> ${districtLabel} &nbsp;|&nbsp;
+        <b>Nature:</b> ${natureLabel} &nbsp;|&nbsp;
+        <b>Status:</b> ${statusLabel} &nbsp;|&nbsp;
+        <b>Program Type:</b> ${progTypeLabel} &nbsp;|&nbsp;
+        <b>Total:</b> ${rows.length} project${rows.length===1?'':'s'}`;
+  }
   win.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>Project Report</title>
     <style>
       @page{ size:A4; margin:14mm; }
@@ -1205,14 +1272,7 @@ function printReport(){
       <button class="print-btn" onclick="window.print()">🖨️ Print</button>
       <h1>Project Report</h1>
       <div class="meta">${officeLabel} — generated ${generatedAt}</div>
-      <div class="filters">
-        <b>Fiscal Year:</b> ${CFY} &nbsp;|&nbsp;
-        <b>Report Type:</b> ${ptypeLabel} &nbsp;|&nbsp;
-        <b>District:</b> ${districtLabel} &nbsp;|&nbsp;
-        <b>Nature:</b> ${natureLabel} &nbsp;|&nbsp;
-        <b>Status:</b> ${statusLabel} &nbsp;|&nbsp;
-        <b>Total:</b> ${rows.length} project${rows.length===1?'':'s'}
-      </div>
+      <div class="filters">${filtersHTML}</div>
       ${rows.length?rows.map(projectDetailBlockHTML).join(''):'<p>No projects match the selected filters.</p>'}
     </body></html>`);
   win.document.close();
@@ -1249,11 +1309,18 @@ function reportFilterBarHTML(){
         <option value="Pending">Pending</option>
       </select>
     </div>
+    <div class="fg" style="margin-bottom:0"><label>Program Type</label>
+      <select id="rpt-progtype" onchange="updateReport()">
+        <option value="all">All</option>
+        <option value="New">नयाँ</option>
+        <option value="Consecutive">क्रमागत</option>
+      </select>
+    </div>
   </div>
   <div style="display:flex;justify-content:flex-end;gap:8px;margin-bottom:14px">
-    <button class="btn btn-out" onclick="exportExcel()">📊 Download Excel</button>
-    <button class="btn btn-out" onclick="exportPDF()">📄 Download PDF</button>
-    <button class="btn btn-out" onclick="printReport()">🖨️ Print Report</button>
+    <button class="btn btn-out btn-report-action" onclick="exportExcel()">📊 Download Excel</button>
+    <button class="btn btn-out btn-report-action" onclick="exportPDF()">📄 Download PDF</button>
+    <button class="btn btn-out btn-report-action" onclick="printReport()">🖨️ Print Report</button>
   </div>`;
 }
 
@@ -2083,7 +2150,7 @@ function renderProjCards(projects,ptype){
   return projects.map(p=>{
     const ptName=gPT().find(x=>x.id===p.type)?.name||'—';
     const prog=p.progress||0;
-    return `<div class="card" style="cursor:pointer;transition:border-color .2s" onmouseenter="this.style.borderColor='var(--primary)'" onmouseleave="this.style.borderColor='var(--border)'">
+    return `<div class="card" style="cursor:pointer;transition:border-color .2s" onclick="openProjectDetail('${ptype}','${p.id}')" onmouseenter="this.style.borderColor='var(--primary)'" onmouseleave="this.style.borderColor='var(--border)'">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:10px">
         <div style="flex:1">
           <div style="font-weight:700;font-size:14px;margin-bottom:4px">${p.name}</div>
@@ -2095,8 +2162,8 @@ function renderProjCards(projects,ptype){
           </div>
         </div>
         ${canEdit()?`<div style="display:flex;gap:5px;flex:none">
-          <button class="btn btn-sm btn-out" onclick="openEditProject('${ptype}','${p.id}')">✏️</button>
-          <button class="btn btn-sm btn-danger" onclick="deleteProject('${ptype}','${p.id}')">🗑️</button>
+          <button class="btn btn-sm btn-out" onclick="event.stopPropagation();openEditProject('${ptype}','${p.id}')">✏️</button>
+          <button class="btn btn-sm btn-danger" onclick="event.stopPropagation();deleteProject('${ptype}','${p.id}')">🗑️</button>
         </div>`:''}
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:11px;margin-bottom:10px">
@@ -2131,6 +2198,59 @@ function countProjectFiles(files){
   if(!files) return 0;
   return Object.values(files).reduce((n,f)=>n+(Array.isArray(f)?f.length:(f?1:0)),0);
 }
+let _detailExportRow=null;
+function openProjectDetail(ptype,id){
+  const raw=PROJ_LABELS[ptype].get().find(x=>x.id===id); if(!raw) return;
+  const p=attachProjMeta(raw,ptype);
+  _detailExportRow=p;
+  const safeName=(p.name||'Project').replace(/[^a-z0-9]/gi,'_')||'Project';
+  openModal(p.name||'Project Details',`
+    ${projectDetailBlockHTML(p)}
+    <div class="modal-footer" style="flex-wrap:wrap;gap:8px">
+      <button class="btn btn-out" onclick="closeModal()">${t('cancel')}</button>
+      <button class="btn btn-out" onclick="exportExcel([projToExportRow(_detailExportRow)],'${safeName}.xlsx')">📊 Excel</button>
+      <button class="btn btn-out" onclick="exportPDF([projToExportRow(_detailExportRow)],'${safeName}.pdf','Project Detail')">📄 PDF</button>
+      <button class="btn btn-pr" onclick="printReport([_detailExportRow],'<b>Project Detail Report</b>')">🖨️ Print</button>
+    </div>
+  `);
+}
+// Converts a data: URI into a real Blob. Browsers increasingly block direct
+// navigation to data: URIs (esp. in a new tab), which is why "View" used to
+// silently fail — Blob/object URLs are handled reliably instead.
+function dataURLtoBlob(dataUrl){
+  const [header,base64]=dataUrl.split(',');
+  const mime=(header.match(/data:(.*?);base64/)||[])[1]||'application/octet-stream';
+  const binary=atob(base64);
+  const bytes=new Uint8Array(binary.length);
+  for(let i=0;i<binary.length;i++) bytes[i]=binary.charCodeAt(i);
+  return new Blob([bytes],{type:mime});
+}
+function getProjectFile(ptype,id,key,idx){
+  const p=PROJ_LABELS[ptype].get().find(x=>x.id===id);
+  const val=p?.files?.[key];
+  if(!val) return null;
+  return Array.isArray(val)?val[idx]:val;
+}
+function viewProjectFile(ptype,id,key,idx){
+  const f=getProjectFile(ptype,id,key,idx);
+  if(!f?.data) return;
+  try{
+    const url=URL.createObjectURL(dataURLtoBlob(f.data));
+    const win=window.open(url,'_blank');
+    if(!win) toast('Please allow pop-ups to view this file','var(--red)');
+    setTimeout(()=>URL.revokeObjectURL(url),60000);
+  }catch(e){ console.error('View failed',e); toast('Could not open this file','var(--red)'); }
+}
+function downloadProjectFile(ptype,id,key,idx){
+  const f=getProjectFile(ptype,id,key,idx);
+  if(!f?.data) return;
+  try{
+    const url=URL.createObjectURL(dataURLtoBlob(f.data));
+    const a=document.createElement('a');
+    a.href=url; a.download=f.name; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),60000);
+  }catch(e){ console.error('Download failed',e); toast('Could not download this file','var(--red)'); }
+}
 function openProjectDocuments(ptype,id){
   const p=PROJ_LABELS[ptype].get().find(x=>x.id===id); if(!p||!p.files) return;
   const slotMeta=key=>NCB_DOC_SLOTS.find(s=>s.key===key)||{label:key,icon:'📎'};
@@ -2143,13 +2263,13 @@ function openProjectDocuments(ptype,id){
     return `<div style="margin-bottom:14px">
       <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:6px">${slot.icon} ${slot.label}${items.length>1?` (${items.length})`:''}</div>
       ${isPhotos?`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:8px">
-        ${items.map(f=>f.data?`<a href="${f.data}" target="_blank" title="${f.name}"><img src="${f.data}" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:6px;border:1px solid var(--border)"></a>`:`<div style="font-size:10px;color:var(--text3)">${f.name} (no preview saved)</div>`).join('')}
+        ${items.map((f,idx)=>f.data?`<img src="${f.data}" title="${f.name}" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:6px;border:1px solid var(--border);cursor:pointer" onclick="viewProjectFile('${ptype}','${id}','${key}',${idx})">`:`<div style="font-size:10px;color:var(--text3)">${f.name} (no preview saved)</div>`).join('')}
       </div>`:`<div style="display:flex;flex-direction:column;gap:6px">
-        ${items.map(f=>`<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 10px;background:var(--surface2);border-radius:6px;font-size:12px">
+        ${items.map((f,idx)=>`<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 10px;background:var(--surface2);border-radius:6px;font-size:12px">
           <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${f.name}</span>
           ${f.data?`<span style="display:flex;gap:6px;flex:none">
-            <a href="${f.data}" target="_blank" class="btn btn-sm btn-out">View</a>
-            <a href="${f.data}" download="${f.name}" class="btn btn-sm btn-out">Download</a>
+            <button class="btn btn-sm btn-out" onclick="viewProjectFile('${ptype}','${id}','${key}',${idx})">View</button>
+            <button class="btn btn-sm btn-out" onclick="downloadProjectFile('${ptype}','${id}','${key}',${idx})">Download</button>
           </span>`:`<span style="font-size:10px;color:var(--text3);flex:none">uploaded before file storage was enabled</span>`}
         </div>`).join('')}
       </div>`}
@@ -2191,10 +2311,10 @@ function openAddProject(ptype){
       </div>
       <div class="grid2">
         <div class="fg"><label>Activity Number</label><input id="pj-activityNo" placeholder="ACT-001"></div>
-        <div class="fg"><label>Type</label>
+        <div class="fg"><label>Program Type</label>
           <select id="pj-projType" onchange="toggleProjType()">
-            <option value="New">New</option>
-            <option value="Consecutive">Consecutive</option>
+            <option value="New">नयाँ</option>
+            <option value="Consecutive">क्रमागत</option>
           </select>
         </div>
       </div>
@@ -2405,10 +2525,10 @@ function openEditProject(ptype,id){
       </div>
       <div class="grid2">
         <div class="fg"><label>Activity Number</label><input id="pj-activityNo" value="${p.activityNo||''}"></div>
-        <div class="fg"><label>Type</label>
+        <div class="fg"><label>Program Type</label>
           <select id="pj-projType" onchange="toggleProjType()">
-            <option value="New" ${p.projType!=='Consecutive'?'selected':''}>New</option>
-            <option value="Consecutive" ${p.projType==='Consecutive'?'selected':''}>Consecutive</option>
+            <option value="New" ${p.projType!=='Consecutive'?'selected':''}>नयाँ</option>
+            <option value="Consecutive" ${p.projType==='Consecutive'?'selected':''}>क्रमागत</option>
           </select>
         </div>
       </div>
